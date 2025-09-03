@@ -49,7 +49,7 @@ export default function CardScreen({ navigation }) {
           onPress={() => navigation.navigate('HomeScreen')}
         >
           <Image
-            source={require('../assets/icons/Common/arrow.png')}
+            source={require('../assets/images/Common/arrow.png')}
             style={s.img}
           />
         </TouchableOpacity>

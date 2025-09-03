@@ -14,7 +14,7 @@ const FeedSideBar = ({ data }) => {
     <View style={styles.container}>
       <TouchableOpacity>
         <Image
-          source={require('../../assets/icons/CardScreen/bookmark.png')}
+          source={require('../../assets/images/CardScreen/bookmark.png')}
           style={styles.icon}
         />
       </TouchableOpacity>
@@ -22,13 +22,13 @@ const FeedSideBar = ({ data }) => {
         onPress={() => navigation.navigate('ChatScreen', { data: data })}
       >
         <Image
-          source={require('../../assets/icons/CardScreen/chat.png')}
+          source={require('../../assets/images/CardScreen/chat.png')}
           style={styles.icon}
         />
       </TouchableOpacity>
       <TouchableOpacity>
         <Image
-          source={require('../../assets/icons/CardScreen/share.png')}
+          source={require('../../assets/images/CardScreen/share.png')}
           style={styles.icon}
         />
       </TouchableOpacity>
