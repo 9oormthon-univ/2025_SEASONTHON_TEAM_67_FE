@@ -12,7 +12,7 @@ const ContentComponent = ({ data }) => {
   const insets = useSafeAreaInsets();
   const frame = useSafeAreaFrame();
   const safeHeight = frame.height - insets.top - insets.bottom;
-  const newsStyle = useMemo(() => styles.news(safeHeight), [safeHeight]);
+  const newsStyle = useMemo(() => s.news(safeHeight), [safeHeight]);
 
   return (
     <View style={newsStyle}>
@@ -27,7 +27,7 @@ const ContentComponent = ({ data }) => {
 
 export default ContentComponent;
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   news: safeHeight => ({
     width: '100%',
     height: Platform.OS === 'ios' ? safeHeight : safeHeight, //이후 변경
@@ -35,8 +35,4 @@ const styles = StyleSheet.create({
     // borderColor: 'black',
     // borderWidth: 1, //test
   }),
-  controlsContainer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'black',
-  },
 });

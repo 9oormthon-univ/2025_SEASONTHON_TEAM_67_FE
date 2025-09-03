@@ -7,28 +7,13 @@ import {
   ImageBackground,
   Text,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { VIDEO_DATA } from '../assets/dummydata';
+import NewsComponent from '../components/CardScreen/NewsComponent';
 
-import Scroll from '../components/CardScreen/Scroll';
-
-// const FeedFooter = () => {
-//   return (
-//     <>
-//       <LinearGradient
-//         colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
-//         start={{ x: 0.5, y: 0 }}
-//         end={{ x: 0.5, y: 1 }}
-//         style={s.footer}
-//         pointerEvents="none"
-//       />
-//     </>
-//   );
-// };
-
-export default function Chatscreen({ navigation }) {
+export default function ChatScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
+  const { data } = route?.params ?? {};
   return (
     <View style={s.flexContainer}>
       <ImageBackground
@@ -36,16 +21,18 @@ export default function Chatscreen({ navigation }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
-        <TouchableOpacity
-          style={[s.btn, { top: insets.top }]}
-          onPress={() => navigation.goBack()}
-        >
-          <Image
-            source={require('../assets/icons/Common/arrow.png')}
-            style={s.img}
-          />
-        </TouchableOpacity>
-        <Text> test</Text>
+        <SafeAreaView style={{ flex: 1, padding: '20' }}>
+          <TouchableOpacity
+            style={[s.btn, { top: insets.top }]}
+            onPress={() => navigation.goBack()}
+          >
+            <Image
+              source={require('../assets/icons/Common/arrow.png')}
+              style={s.img}
+            />
+          </TouchableOpacity>
+          <NewsComponent data={data} fields={['title', 'date']} />{' '}
+        </SafeAreaView>
       </ImageBackground>
     </View>
   );
@@ -73,4 +60,11 @@ const s = StyleSheet.create({
     height: 24,
     resizeMode: 'contain',
   },
+  news: safeHeight => ({
+    width: '100%',
+    height: Platform.OS === 'ios' ? safeHeight : safeHeight,
+    padding: 20,
+    // borderColor: 'black',
+    // borderWidth: 1, //test
+  }),
 });
