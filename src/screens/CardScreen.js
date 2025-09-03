@@ -45,7 +45,8 @@ export default function CardScreen({ navigation }) {
         />
         <TouchableOpacity
           style={[s.btn, { top: insets.top, zIndex: 2 }]}
-          onPress={() => navigation.goBack()}
+          // onPress={() => navigation.goBack() //스크롤 변경이후 작동안됨
+          onPress={() => navigation.navigate('HomeScreen')}
         >
           <Image
             source={require('../assets/icons/Common/arrow.png')}

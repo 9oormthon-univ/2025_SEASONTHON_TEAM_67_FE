@@ -6,8 +6,11 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const FeedSideBar = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <TouchableOpacity>
@@ -16,7 +19,7 @@ const FeedSideBar = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Chatscreen')}>
         <Image
           source={require('../../assets/icons/CardScreen/chat.png')}
           style={styles.icon}
