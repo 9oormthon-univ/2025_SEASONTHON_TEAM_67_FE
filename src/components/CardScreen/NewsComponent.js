@@ -17,18 +17,6 @@ const NewsComponent = () => {
     <View>
       <View style={newsStyle} />
       {/* <View style={styles.controlsContainer} /> */}
-      {/* <LinearGradient
-        colors={[
-          '#000000F0',
-          '#000000D0',
-          '#000000A0',
-          '#00000070',
-          '#00000040',
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 0.5 }}
-        style={styles.controlsContainer}
-      /> */}
     </View>
   );
 };
@@ -37,10 +25,9 @@ export default NewsComponent;
 
 const styles = StyleSheet.create({
   news: safeHeight => ({
-    backgroundColor: 'gray',
     width: '100%',
     height: Platform.OS === 'ios' ? safeHeight : safeHeight, //이후 변경
-    borderColor: 'white',
+    borderColor: 'black',
     borderWidth: 2,
   }),
   controlsContainer: {

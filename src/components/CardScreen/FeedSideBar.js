@@ -48,6 +48,5 @@ const styles = StyleSheet.create({
     height: 32,
     marginBottom: 2,
     resizeMode: 'contain',
-    tintColor: 'white',
   },
 });

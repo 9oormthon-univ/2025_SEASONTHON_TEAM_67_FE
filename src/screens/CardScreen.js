@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import React, { useRef, useState, useCallback } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ImageBackground } from 'react-native';
 import { VIDEO_DATA } from '../assets/dummydata';
 import FeedRow from '../components/CardScreen/FeedRow';
 
@@ -65,24 +66,30 @@ const CardScreen = () => {
 
   return (
     <SafeAreaView style={s.flexContainer}>
-      {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
-      <Animated.FlatList
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        ref={refFlatList}
-        automaticallyAdjustContentInsets
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
-        onScroll={onScroll}
-        data={VIDEO_DATA}
-        renderItem={renderItem}
-        getItemLayout={getItemLayout}
-        decelerationRate="fast"
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={0.2}
-        removeClippedSubviews
-        bounces={false}
-      />
+      <ImageBackground
+        source={require('../assets/images/Common/background.png')}
+        style={s.flexContainer}
+        resizeMode="cover"
+      >
+        {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
+        <Animated.FlatList
+          pagingEnabled
+          showsVerticalScrollIndicator={false}
+          ref={refFlatList}
+          automaticallyAdjustContentInsets
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig.current}
+          onScroll={onScroll}
+          data={VIDEO_DATA}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          decelerationRate="fast"
+          keyExtractor={keyExtractor}
+          onEndReachedThreshold={0.2}
+          removeClippedSubviews
+          bounces={false}
+        />
+      </ImageBackground>
     </SafeAreaView>
   );
 };
@@ -90,6 +97,6 @@ const CardScreen = () => {
 export default CardScreen;
 
 const s = StyleSheet.create({
-  flexContainer: { flex: 1, backgroundColor: 'black' },
+  flexContainer: { flex: 1 },
   testtext: { color: 'white', fontSize: 30, fontWeight: '700' },
 });

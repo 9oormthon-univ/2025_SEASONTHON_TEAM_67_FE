@@ -27,7 +27,6 @@ const s = StyleSheet.create({
     width: 32,
     height: 32,
     resizeMode: 'contain',
-    tintColor: 'white',
   },
 });
 
