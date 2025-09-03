@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   ImageBackground,
+  Text,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,16 +36,8 @@ export default function Chatscreen({ navigation }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
-        <View
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: 'rgba(255,249,249,0.5)',
-            zIndex: 0,
-          }}
-          pointerEvents="none"
-        />
         <TouchableOpacity
-          style={[s.btn, { top: insets.top, zIndex: 2 }]}
+          style={[s.btn, { top: insets.top }]}
           onPress={() => navigation.goBack()}
         >
           <Image
@@ -52,9 +45,7 @@ export default function Chatscreen({ navigation }) {
             style={s.img}
           />
         </TouchableOpacity>
-        {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
-        <Scroll data={VIDEO_DATA} />
-        <FeedFooter />
+        <Text> test</Text>
       </ImageBackground>
     </View>
   );
@@ -62,13 +53,13 @@ export default function Chatscreen({ navigation }) {
 
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
-  //   footer: {
-  //     position: 'absolute',
-  //     left: 0,
-  //     right: 0,
-  //     bottom: 0,
-  //     height: 200,
-  //   },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+  },
   btn: {
     position: 'absolute',
     top: 0,
@@ -78,8 +69,8 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   img: {
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
 });

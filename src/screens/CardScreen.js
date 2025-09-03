@@ -79,8 +79,8 @@ const s = StyleSheet.create({
     paddingVertical: 4,
   },
   img: {
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
 });

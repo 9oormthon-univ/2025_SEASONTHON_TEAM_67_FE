@@ -19,7 +19,7 @@ const FeedSideBar = () => {
           style={styles.icon}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Chatscreen')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ChatScreen')}>
         <Image
           source={require('../../assets/icons/CardScreen/chat.png')}
           style={styles.icon}
