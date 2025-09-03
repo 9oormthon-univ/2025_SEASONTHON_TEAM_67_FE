@@ -1,27 +1,95 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import {
+  Animated,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  Text,
+} from 'react-native';
+import React, { useRef, useState, useCallback } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { VIDEO_DATA } from '../assets/dummydata';
+import FeedRow from '../components/CardScreen/FeedRow';
 
-export default function CardScreen({ route }) {
-  const { item } = route.params || {};
+const CardScreen = () => {
+  const { height } = useWindowDimensions();
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
+  const refFlatList = useRef(null);
+
+  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
+
+  const onViewableItemsChanged = useCallback(({ changed }) => {
+    if (changed.length > 0) {
+      setScrollInfo({
+        isViewable: changed[0].isViewable,
+        index: changed[0].index,
+      });
+    }
+  }, []);
+
+  const getItemLayout = useCallback(
+    (_, index) => ({
+      length: height,
+      offset: height * index,
+      index,
+    }),
+    [height],
+  );
+
+  const keyExtractor = useCallback(item => `${item.id}`, []);
+
+  const onScroll = useCallback(
+    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+      useNativeDriver: true,
+    }),
+    [],
+  );
+
+  const renderItem = useCallback(
+    ({ item, index }) => {
+      const { index: scrollIndex } = scrollInfo;
+      const isNext = Math.abs(index - scrollIndex) <= 1;
+
+      return (
+        <FeedRow
+        // data={item}
+        // index={index}
+        // isNext={isNext}
+        // visible={scrollInfo}
+        // isVisible={scrollIndex === index}
+        />
+      );
+    },
+    [scrollInfo],
+  );
 
   return (
-    <SafeAreaView style={s.wrap}>
-      {item ? (
-        <>
-          <Text style={s.title}>{item.title}</Text>
-          <Text style={s.summary}>{item.summary}</Text>
-          <Text style={s.tag}>{item.tag}</Text>
-        </>
-      ) : (
-        <Text>뉴스 데이터를 불러올 수 없어요.</Text>
-      )}
+    <SafeAreaView style={s.flexContainer}>
+      {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
+      <Animated.FlatList
+        pagingEnabled
+        showsVerticalScrollIndicator={false}
+        ref={refFlatList}
+        automaticallyAdjustContentInsets
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={viewabilityConfig.current}
+        onScroll={onScroll}
+        data={VIDEO_DATA}
+        renderItem={renderItem}
+        getItemLayout={getItemLayout}
+        decelerationRate="fast"
+        keyExtractor={keyExtractor}
+        onEndReachedThreshold={0.2}
+        removeClippedSubviews
+        bounces={false}
+      />
     </SafeAreaView>
   );
-}
+};
+
+export default CardScreen;
 
 const s = StyleSheet.create({
-  wrap: { flex: 1, backgroundColor: '#FFF', padding: 20 },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
-  summary: { fontSize: 16, color: '#444', marginBottom: 8 },
-  tag: { fontSize: 14, color: '#888' },
+  flexContainer: { flex: 1, backgroundColor: 'black' },
+  testtext: { color: 'white', fontSize: 30, fontWeight: '700' },
 });
