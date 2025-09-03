@@ -35,8 +35,16 @@ export default function CardScreen({ navigation }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(255,249,249,0.5)',
+            zIndex: 0,
+          }}
+          pointerEvents="none"
+        />
         <TouchableOpacity
-          style={[s.btn, { top: insets.top }]}
+          style={[s.btn, { top: insets.top, zIndex: 2 }]}
           onPress={() => navigation.goBack()}
         >
           <Image

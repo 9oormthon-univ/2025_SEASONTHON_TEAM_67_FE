@@ -1,48 +1,64 @@
-import {
-  StyleSheet,
-  View,
-  useWindowDimensions,
-  Platform,
-  Text,
-} from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
-import {
-  useSafeAreaFrame,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import React, { useMemo } from 'react';
+import React from 'react';
+import colors from '../../styles/colors';
+import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
-const ContentComponent = ({ data }) => {
-  //   const { height } = useSafeAreaFrame();
-  const insets = useSafeAreaInsets();
-  const frame = useSafeAreaFrame();
-  const safeHeight = frame.height - insets.top - insets.bottom;
-  const newsStyle = useMemo(() => styles.news(safeHeight), [safeHeight]);
+const NewsComponent = ({ data }) => (
+  <View style={s.container}>
+    <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
+    <Text style={s.quiz}>{data.quiz}</Text>
 
-  return (
-    <View>
-      <View style={newsStyle}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-          test
+    <View style={s.btnwrap}>
+      <TouchableOpacity style={[s.btn, { backgroundColor: colors.pink600 }]}>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
+          아니예요
         </Text>
-      </View>
-      {/* <View style={styles.controlsContainer} /> */}
+      </TouchableOpacity>
+      <TouchableOpacity style={[s.btn, { backgroundColor: colors.green600 }]}>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
+          맞아요
+        </Text>
+      </TouchableOpacity>
     </View>
-  );
-};
+  </View>
+);
 
-export default ContentComponent;
+export default NewsComponent;
 
-const styles = StyleSheet.create({
-  news: safeHeight => ({
-    width: '100%',
-    height: Platform.OS === 'ios' ? safeHeight : safeHeight, //이후 변경
-    padding: 20,
-    borderColor: 'black',
-    borderWidth: 1, //test
-  }),
-  controlsContainer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'black',
+const s = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quiz: {
+    width: '90%',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  btnwrap: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: 10,
+  },
+  btn: {
+    textAlign: 'center',
+    width: 120,
+    padding: 12,
+    backgroundColor: 'rgba(225, 247, 56, 0.5)',
+    borderRadius: 25,
+    fontSize: 18,
+    fontWeight: 'bold',
+    lineHeight: 18,
+    shadowColor: 'rgba(154, 108, 108, 0.25)',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 1,
+    shadowRadius: 20,
+    elevation: 8,
   },
 });

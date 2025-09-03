@@ -1,50 +1,43 @@
-import {
-  StyleSheet,
-  View,
-  useWindowDimensions,
-  Platform,
-  Text,
-} from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
-import {
-  useSafeAreaFrame,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import React, { useMemo } from 'react';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
 const NewsComponent = ({ data }) => {
-  //   const { height } = useSafeAreaFrame();
-  const insets = useSafeAreaInsets();
-  const frame = useSafeAreaFrame();
-  const safeHeight = frame.height - insets.top - insets.bottom;
-  const newsStyle = useMemo(() => styles.news(safeHeight), [safeHeight]);
+  // 문장마다 분리
+  const splitSentences = text => (text ? text.split(/(?<=[.!?…])\s+/) : []);
+  const sentences = splitSentences(data.description);
+  const titleSentences = splitSentences(data.title);
 
   return (
-    <View>
-      <View style={newsStyle}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-          {data.title}
-        </Text>
-        <Text style={{ color: '#888', marginBottom: 8 }}>{data.date}</Text>
-        <Text style={{ fontSize: 16 }}>{data.description}</Text>
-      </View>
-      {/* <View style={styles.controlsContainer} /> */}
+    <View style={s.container}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>
+        {titleSentences.map((sentence, idx) => (
+          <React.Fragment key={idx}>
+            {sentence}
+            {idx < titleSentences.length - 1 ? '\n' : ''}
+          </React.Fragment>
+        ))}
+      </Text>
+      <Text style={{ color: '#888', fontWeight: 'bold', marginBottom: 40 }}>
+        {data.date}
+      </Text>
+      <Text style={{ fontSize: 16 }}>
+        {sentences.map((sentence, idx) => (
+          <React.Fragment key={idx}>
+            {sentence}
+            {idx < sentences.length - 1 ? '\n\n' : ''}
+          </React.Fragment>
+        ))}
+      </Text>
     </View>
   );
 };
 
 export default NewsComponent;
 
-const styles = StyleSheet.create({
-  news: safeHeight => ({
-    width: '100%',
-    height: Platform.OS === 'ios' ? safeHeight : safeHeight, //이후 변경
-    padding: 20,
-    borderColor: 'black',
-    borderWidth: 1, //test
-  }),
-  controlsContainer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'black',
+const s = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 40,
   },
 });

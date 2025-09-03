@@ -1,19 +1,17 @@
 import { StyleSheet, View, Text } from 'react-native';
 
 import React from 'react';
-import NewsComponent from './NewsComponent';
+import ContentComponent from './ContentComponent';
+import QuizComponent from './QuizComponent';
 import FeedFooter from './FeedFooter';
 import FeedSideBar from './FeedSideBar';
-import QuizComponent from './QuizComponent';
 
 const FeedRow = ({ data }) => {
-  const showQuiz = Math.random() < 0.5;
-
   return (
     <View>
-      {showQuiz ? <QuizComponent data={data} /> : <NewsComponent data={data} />}
+      <ContentComponent data={data} />
       <FeedSideBar />
-      <FeedFooter />
+      <FeedFooter data={data} />
     </View>
   );
 };
