@@ -32,6 +32,7 @@ const s = StyleSheet.create({
     paddingVertical: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: -100,
   },
   quiz: {
     width: '90%',
