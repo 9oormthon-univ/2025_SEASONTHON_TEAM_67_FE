@@ -1,19 +1,27 @@
 import React from 'react';
-import { SafeAreaView, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 
-export default function CardScreen({ navigation }) {
+export default function CardScreen({ route }) {
+  const { item } = route.params || {};
+
   return (
     <SafeAreaView style={s.wrap}>
-      <Text style={s.title}>CardScreen</Text>
-      <TouchableOpacity style={s.btn} onPress={() => navigation.goBack()}>
-        <Text style={s.btnText}>뒤로</Text>
-      </TouchableOpacity>
+      {item ? (
+        <>
+          <Text style={s.title}>{item.title}</Text>
+          <Text style={s.summary}>{item.summary}</Text>
+          <Text style={s.tag}>{item.tag}</Text>
+        </>
+      ) : (
+        <Text>뉴스 데이터를 불러올 수 없어요.</Text>
+      )}
     </SafeAreaView>
   );
 }
+
 const s = StyleSheet.create({
-  wrap:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#fff'},
-  title:{fontSize:28,fontWeight:'800',marginBottom:24},
-  btn:{backgroundColor:'#111827',paddingVertical:12,paddingHorizontal:20,borderRadius:12},
-  btnText:{color:'#fff',fontWeight:'700'}
+  wrap: { flex: 1, backgroundColor: '#FFF', padding: 20 },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
+  summary: { fontSize: 16, color: '#444', marginBottom: 8 },
+  tag: { fontSize: 14, color: '#888' },
 });
