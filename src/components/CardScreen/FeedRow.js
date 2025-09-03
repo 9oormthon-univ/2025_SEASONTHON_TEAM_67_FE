@@ -1,19 +1,19 @@
 import { StyleSheet, View, Text } from 'react-native';
+
 import React from 'react';
 import NewsComponent from './NewsComponent';
-// import FeedFooter from './FeedFooter';
+import FeedFooter from './FeedFooter';
 import FeedSideBar from './FeedSideBar';
-import FeedHeader from './FeedHeader';
+import QuizComponent from './QuizComponent';
 
-// const FeedRow = ({data, index, visible, isVisible, isNext}) => {
-const FeedRow = () => {
+const FeedRow = ({ data }) => {
+  const showQuiz = Math.random() < 0.5;
+
   return (
     <View>
-      <NewsComponent />
-      {/* <NewsComponent data={data} isNext={isNext} isVisible {isVisible} /> */}
-      <FeedHeader />
+      {showQuiz ? <QuizComponent data={data} /> : <NewsComponent data={data} />}
       <FeedSideBar />
-      {/* <FeedFooter data={data} /> */}
+      <FeedFooter />
     </View>
   );
 };

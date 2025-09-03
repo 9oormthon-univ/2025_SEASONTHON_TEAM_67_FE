@@ -12,7 +12,7 @@ import {
 } from 'react-native-safe-area-context';
 import React, { useMemo } from 'react';
 
-const NewsComponent = ({ data }) => {
+const ContentComponent = ({ data }) => {
   //   const { height } = useSafeAreaFrame();
   const insets = useSafeAreaInsets();
   const frame = useSafeAreaFrame();
@@ -23,17 +23,15 @@ const NewsComponent = ({ data }) => {
     <View>
       <View style={newsStyle}>
         <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
-          {data.title}
+          test
         </Text>
-        <Text style={{ color: '#888', marginBottom: 8 }}>{data.date}</Text>
-        <Text style={{ fontSize: 16 }}>{data.description}</Text>
       </View>
       {/* <View style={styles.controlsContainer} /> */}
     </View>
   );
 };
 
-export default NewsComponent;
+export default ContentComponent;
 
 const styles = StyleSheet.create({
   news: safeHeight => ({

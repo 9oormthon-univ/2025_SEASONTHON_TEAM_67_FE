@@ -1,102 +1,77 @@
+import React from 'react';
 import {
-  Animated,
   StyleSheet,
   View,
-  useWindowDimensions,
-  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
 } from 'react-native';
-import React, { useRef, useState, useCallback } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ImageBackground } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VIDEO_DATA } from '../assets/dummydata';
-import FeedRow from '../components/CardScreen/FeedRow';
 
-const CardScreen = () => {
-  const { height } = useWindowDimensions();
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
-  const refFlatList = useRef(null);
+import Scroll from '../components/CardScreen/Scroll';
 
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
-
-  const onViewableItemsChanged = useCallback(({ changed }) => {
-    if (changed.length > 0) {
-      setScrollInfo({
-        isViewable: changed[0].isViewable,
-        index: changed[0].index,
-      });
-    }
-  }, []);
-
-  const getItemLayout = useCallback(
-    (_, index) => ({
-      length: height,
-      offset: height * index,
-      index,
-    }),
-    [height],
-  );
-
-  const keyExtractor = useCallback(item => `${item.id}`, []);
-
-  const onScroll = useCallback(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true,
-    }),
-    [],
-  );
-
-  const renderItem = useCallback(
-    ({ item, index }) => {
-      const { index: scrollIndex } = scrollInfo;
-      const isNext = Math.abs(index - scrollIndex) <= 1;
-
-      return (
-        <FeedRow
-        // data={item}
-        // index={index}
-        // isNext={isNext}
-        // visible={scrollInfo}
-        // isVisible={scrollIndex === index}
-        />
-      );
-    },
-    [scrollInfo],
-  );
-
+const FeedFooter = () => {
   return (
-    <SafeAreaView style={s.flexContainer}>
+    <>
+      <LinearGradient
+        colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={s.footer}
+        pointerEvents="none"
+      />
+    </>
+  );
+};
+
+export default function CardScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  return (
+    <View style={s.flexContainer}>
       <ImageBackground
         source={require('../assets/images/Common/background.png')}
         style={s.flexContainer}
         resizeMode="cover"
       >
+        <TouchableOpacity
+          style={[s.btn, { top: insets.top }]}
+          onPress={() => navigation.goBack()}
+        >
+          <Image
+            source={require('../assets/icons/Common/arrow.png')}
+            style={s.img}
+          />
+        </TouchableOpacity>
         {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
-        <Animated.FlatList
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-          ref={refFlatList}
-          automaticallyAdjustContentInsets
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewabilityConfig.current}
-          onScroll={onScroll}
-          data={VIDEO_DATA}
-          renderItem={renderItem}
-          getItemLayout={getItemLayout}
-          decelerationRate="fast"
-          keyExtractor={keyExtractor}
-          onEndReachedThreshold={0.2}
-          removeClippedSubviews
-          bounces={false}
-        />
+        <Scroll data={VIDEO_DATA} />
+        <FeedFooter />
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
-};
-
-export default CardScreen;
+}
 
 const s = StyleSheet.create({
-  flexContainer: { flex: 1 },
-  testtext: { color: 'white', fontSize: 30, fontWeight: '700' },
+  flexContainer: { flex: 1, backgroundColor: 'black' },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+  },
+  btn: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 100,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+  img: {
+    width: 32,
+    height: 32,
+    resizeMode: 'contain',
+  },
 });
