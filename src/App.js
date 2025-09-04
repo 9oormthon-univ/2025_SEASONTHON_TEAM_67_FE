@@ -10,6 +10,7 @@ import HomeScreen from './screens/HomeScreen';
 import BookmarkScreen from './screens/BookmarkScreen';
 import SettingScreen from './screens/SettingScreen';
 import CardScreen from './screens/CardScreen';
+import ChatScreen from './screens/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,13 +18,21 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="SplashScreen"   component={SplashScreen} />
-          <Stack.Screen name="LoginScreen"    component={LoginScreen} />
-          <Stack.Screen name="HomeScreen"     component={HomeScreen} />
+        <Stack.Navigator
+          initialRouteName="SplashScreen"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="BookmarkScreen" component={BookmarkScreen} />
-          <Stack.Screen name="SettingScreen"  component={SettingScreen} />
-          <Stack.Screen name="CardScreen"     component={CardScreen} />
+          <Stack.Screen name="SettingScreen" component={SettingScreen} />
+          <Stack.Screen
+            name="CardScreen"
+            component={CardScreen}
+            options={{ animation: 'slide_from_bottom' }} //이동 시 아래에서 위로 올라옴
+          />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

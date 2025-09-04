@@ -1,50 +1,49 @@
-import { StyleSheet, View, useWindowDimensions, Platform } from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
-import {
-  useSafeAreaFrame,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import React, { useMemo } from 'react';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-const NewsComponent = () => {
-  //   const { height } = useSafeAreaFrame();
-  const insets = useSafeAreaInsets();
-  const frame = useSafeAreaFrame();
-  const safeHeight = frame.height - insets.top - insets.bottom;
-  const newsStyle = useMemo(() => styles.news(safeHeight), [safeHeight]);
+const NewsComponent = ({
+  data,
+  fields = ['title', 'date', 'description'],
+  style,
+}) => {
+  // 문장마다 분리
+  const splitSentences = text => (text ? text.split(/(?<=[.!?…])\s+/) : []);
+  const sentences = splitSentences(data.description);
+  const titleSentences = splitSentences(data.title);
 
   return (
-    <View>
-      <View style={newsStyle} />
-      {/* <View style={styles.controlsContainer} /> */}
-      {/* <LinearGradient
-        colors={[
-          '#000000F0',
-          '#000000D0',
-          '#000000A0',
-          '#00000070',
-          '#00000040',
-        ]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 0.5 }}
-        style={styles.controlsContainer}
-      /> */}
+    <View style={[s.container, style]}>
+      {fields.includes('title') && (
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>
+          {titleSentences.map((sentence, idx) => (
+            <React.Fragment key={idx}>
+              {sentence}
+              {idx < titleSentences.length - 1 ? '\n' : ''}
+            </React.Fragment>
+          ))}
+        </Text>
+      )}
+      {fields.includes('date') && (
+        <Text style={{ color: '#888', fontWeight: 'bold' }}>{data.date}</Text>
+      )}
+      {fields.includes('description') && (
+        <Text style={{ fontSize: 16, marginTop: 40 }}>
+          {sentences.map((sentence, idx) => (
+            <React.Fragment key={idx}>
+              {sentence}
+              {idx < sentences.length - 1 ? '\n\n' : ''}
+            </React.Fragment>
+          ))}
+        </Text>
+      )}
     </View>
   );
 };
 
 export default NewsComponent;
 
-const styles = StyleSheet.create({
-  news: safeHeight => ({
-    backgroundColor: 'gray',
-    width: '100%',
-    height: Platform.OS === 'ios' ? safeHeight : safeHeight, //이후 변경
-    borderColor: 'white',
-    borderWidth: 2,
-  }),
-  controlsContainer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'black',
+const s = StyleSheet.create({
+  container: {
+    // backgroundColor: 'pink',
   },
 });

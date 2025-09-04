@@ -1,19 +1,14 @@
-import { StyleSheet, View, Text } from 'react-native';
-import React from 'react';
-import NewsComponent from './NewsComponent';
-// import FeedFooter from './FeedFooter';
+import { View } from 'react-native';
+import ContentComponent from './ContentComponent';
+import FeedFooter from './FeedFooter';
 import FeedSideBar from './FeedSideBar';
-import FeedHeader from './FeedHeader';
 
-// const FeedRow = ({data, index, visible, isVisible, isNext}) => {
-const FeedRow = () => {
+const FeedRow = ({ data }) => {
   return (
     <View>
-      <NewsComponent />
-      {/* <NewsComponent data={data} isNext={isNext} isVisible {isVisible} /> */}
-      <FeedHeader />
-      <FeedSideBar />
-      {/* <FeedFooter data={data} /> */}
+      <ContentComponent data={data} />
+      <FeedSideBar data={data} />
+      <FeedFooter data={data} />
     </View>
   );
 };

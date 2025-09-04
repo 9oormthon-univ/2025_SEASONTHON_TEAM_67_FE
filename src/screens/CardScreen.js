@@ -1,95 +1,86 @@
+import React from 'react';
 import {
-  Animated,
   StyleSheet,
   View,
-  useWindowDimensions,
-  Text,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
 } from 'react-native';
-import React, { useRef, useState, useCallback } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VIDEO_DATA } from '../assets/dummydata';
-import FeedRow from '../components/CardScreen/FeedRow';
 
-const CardScreen = () => {
-  const { height } = useWindowDimensions();
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
-  const refFlatList = useRef(null);
+import Scroll from '../components/CardScreen/Scroll';
 
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
-
-  const onViewableItemsChanged = useCallback(({ changed }) => {
-    if (changed.length > 0) {
-      setScrollInfo({
-        isViewable: changed[0].isViewable,
-        index: changed[0].index,
-      });
-    }
-  }, []);
-
-  const getItemLayout = useCallback(
-    (_, index) => ({
-      length: height,
-      offset: height * index,
-      index,
-    }),
-    [height],
-  );
-
-  const keyExtractor = useCallback(item => `${item.id}`, []);
-
-  const onScroll = useCallback(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true,
-    }),
-    [],
-  );
-
-  const renderItem = useCallback(
-    ({ item, index }) => {
-      const { index: scrollIndex } = scrollInfo;
-      const isNext = Math.abs(index - scrollIndex) <= 1;
-
-      return (
-        <FeedRow
-        // data={item}
-        // index={index}
-        // isNext={isNext}
-        // visible={scrollInfo}
-        // isVisible={scrollIndex === index}
-        />
-      );
-    },
-    [scrollInfo],
-  );
-
+const FeedFooter = () => {
   return (
-    <SafeAreaView style={s.flexContainer}>
-      {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
-      <Animated.FlatList
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        ref={refFlatList}
-        automaticallyAdjustContentInsets
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
-        onScroll={onScroll}
-        data={VIDEO_DATA}
-        renderItem={renderItem}
-        getItemLayout={getItemLayout}
-        decelerationRate="fast"
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={0.2}
-        removeClippedSubviews
-        bounces={false}
+    <>
+      <LinearGradient
+        colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={s.footer}
+        pointerEvents="none"
       />
-    </SafeAreaView>
+    </>
   );
 };
 
-export default CardScreen;
+export default function CardScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  
+  return (
+    <View style={s.flexContainer}>
+      <ImageBackground
+        source={require('../assets/images/Common/background.png')}
+        style={s.flexContainer}
+        resizeMode="cover"
+      >
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(255,249,249,0.5)',
+            zIndex: 0,
+          }}
+          pointerEvents="none"
+        />
+        <TouchableOpacity
+          style={[s.btn, { top: insets.top, zIndex: 2 }]}
+          // onPress={() => navigation.goBack() //스크롤 변경이후 작동안됨
+          onPress={() => navigation.navigate('HomeScreen')}
+        >
+          <Image
+            source={require('../assets/images/Common/arrow.png')}
+            style={s.img}
+          />
+        </TouchableOpacity>
+        <Scroll data={VIDEO_DATA} />
+        <FeedFooter />
+      </ImageBackground>
+    </View>
+  );
+}
 
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
-  testtext: { color: 'white', fontSize: 30, fontWeight: '700' },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+  },
+  btn: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 100,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+  img: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
 });
