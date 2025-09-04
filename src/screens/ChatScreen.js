@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -11,16 +11,34 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NewsComponent from '../components/CardScreen/NewsComponent';
 import InputBar from '../components/ChatScreen/InputBar';
+import ChatWrapper from '../components/ChatScreen/ChatWrapper';
 
 export default function ChatScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
   const { data } = route?.params ?? {};
   const [inputValue, setInputValue] = React.useState('');
+  const [messages, setMessages] = useState([
+    { sender: 'ai', text: '이 기사에 대해 더 알아보고 싶은 내용이 있나요?' },
+  ]);
 
-  const handleSend = () => {
-    // 원하는 동작 구현 (예: 메시지 전송)
-    console.log('Send:', inputValue);
+  const handleSend = async () => {
+    if (!inputValue.trim()) return;
+    // 사용자 메시지 추가
+    setMessages(prev => [...prev, { sender: 'user', text: inputValue }]);
     setInputValue('');
+
+    // 백엔드 요청 예시 (실제 API로 변경)
+    // const response = await fetch(...);
+    // const data = await response.json();
+    // setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
+
+    // 데모: 1초 후 AI 응답
+    setTimeout(() => {
+      setMessages(prev => [
+        ...prev,
+        { sender: 'ai', text: 'AI 응답 예시입니다.' },
+      ]);
+    }, 1000);
   };
 
   return (
@@ -30,7 +48,16 @@ export default function ChatScreen({ navigation, route }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
-        <SafeAreaView style={{ flex: 1, padding: '20' }}>
+        {/* Gray tint overlay */}
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'rgba(91, 111, 88, 0.1)', // gray tint with 40% opacity
+            zIndex: 1,
+          }}
+          pointerEvents="none"
+        />
+        <SafeAreaView style={{ flex: 1, padding: '20', zIndex: 2 }}>
           <TouchableOpacity
             style={[s.btn, { top: insets.top }]}
             onPress={() => navigation.goBack()}
@@ -40,7 +67,15 @@ export default function ChatScreen({ navigation, route }) {
               style={s.img}
             />
           </TouchableOpacity>
-          <NewsComponent data={data} fields={['title', 'date']} />
+          <NewsComponent
+            data={data}
+            fields={['title', 'date']}
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 30,
+            }}
+          />
+          <ChatWrapper messages={messages} />
           <InputBar
             value={inputValue}
             onChangeText={setInputValue}
@@ -74,11 +109,4 @@ const s = StyleSheet.create({
     height: 24,
     resizeMode: 'contain',
   },
-  news: safeHeight => ({
-    width: '100%',
-    height: Platform.OS === 'ios' ? safeHeight : safeHeight,
-    padding: 20,
-    // borderColor: 'black',
-    // borderWidth: 1, //test
-  }),
 });

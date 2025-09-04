@@ -19,7 +19,10 @@ const ContentComponent = ({ data }) => {
       {data.content === 2 ? (
         <QuizComponent data={data} />
       ) : (
-        <NewsComponent data={data} />
+        <NewsComponent
+          data={data}
+          style={{ paddingHorizontal: 20, paddingVertical: 40 }}
+        />
       )}
     </View>
   );

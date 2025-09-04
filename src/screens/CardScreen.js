@@ -28,6 +28,7 @@ const FeedFooter = () => {
 
 export default function CardScreen({ navigation }) {
   const insets = useSafeAreaInsets();
+  
   return (
     <View style={s.flexContainer}>
       <ImageBackground
@@ -53,7 +54,6 @@ export default function CardScreen({ navigation }) {
             style={s.img}
           />
         </TouchableOpacity>
-        {/* <StatusBar barStyle={'light-content'} backgroundColor={'black'} /> */}
         <Scroll data={VIDEO_DATA} />
         <FeedFooter />
       </ImageBackground>

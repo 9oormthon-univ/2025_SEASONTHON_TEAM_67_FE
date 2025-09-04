@@ -24,12 +24,10 @@ const NewsComponent = ({
         </Text>
       )}
       {fields.includes('date') && (
-        <Text style={{ color: '#888', fontWeight: 'bold', marginBottom: 40 }}>
-          {data.date}
-        </Text>
+        <Text style={{ color: '#888', fontWeight: 'bold' }}>{data.date}</Text>
       )}
       {fields.includes('description') && (
-        <Text style={{ fontSize: 16 }}>
+        <Text style={{ fontSize: 16, marginTop: 40 }}>
           {sentences.map((sentence, idx) => (
             <React.Fragment key={idx}>
               {sentence}
@@ -46,8 +44,6 @@ export default NewsComponent;
 
 const s = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 40,
+    // backgroundColor: 'pink',
   },
 });
