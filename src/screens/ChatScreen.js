@@ -10,10 +10,19 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NewsComponent from '../components/CardScreen/NewsComponent';
+import InputBar from '../components/ChatScreen/InputBar';
 
 export default function ChatScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
   const { data } = route?.params ?? {};
+  const [inputValue, setInputValue] = React.useState('');
+
+  const handleSend = () => {
+    // 원하는 동작 구현 (예: 메시지 전송)
+    console.log('Send:', inputValue);
+    setInputValue('');
+  };
+
   return (
     <View style={s.flexContainer}>
       <ImageBackground
@@ -31,7 +40,12 @@ export default function ChatScreen({ navigation, route }) {
               style={s.img}
             />
           </TouchableOpacity>
-          <NewsComponent data={data} fields={['title', 'date']} />{' '}
+          <NewsComponent data={data} fields={['title', 'date']} />
+          <InputBar
+            value={inputValue}
+            onChangeText={setInputValue}
+            onSend={handleSend}
+          />
         </SafeAreaView>
       </ImageBackground>
     </View>
