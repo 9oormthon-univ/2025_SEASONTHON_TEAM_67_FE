@@ -1,40 +1,68 @@
 export const VIDEO_DATA = [
   {
-    id: 1,
-    title: '의무지출 5년간 100조… 재정 건전성에 부담돼요',
-    url: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    description:
-      '지난 5년 동안 한국 정부의 의무지출이 약 100조 원 늘었어요. 의무지출은 법이나 제도로 정해져 자동으로 집행돼서 구조적으로 바꾸기가 쉽지 않아요. 전문가들은 이런 상황이 계속되면 나라 살림에 부담이 될 수 있다고 말했어요. 그래서 장기적으로는 구조 개편과 효율적인 예산 운영이 필요하다고 했어요.',
-    link: 'https://via.placeholder.com/150',
-    date: '2025.08.20',
-    source: '한국일보 외 2',
-    quiz: '이 영상의 주제는 무엇인가요?',
-    answer: 1,
-    content: 1,
-  },
-  {
-    id: 2,
-    title: 'Sample Video 2',
-    url: 'https://www.w3schools.com/html/movie.mp4',
-    description: 'Another sample video.',
-    link: 'https://via.placeholder.com/150',
-    date: '2024-06-02',
-    source: '123123일보 외 2',
-    quiz: '이번 제정은 나라의 제정에 부담이 되는 요소가 없다?',
-    answer: 1,
-    content: 2,
-  },
-  {
-    id: 3,
-    title: 'Sample  3',
-    url: 'https://www.w3schools.com/html/mov_bbb.mp4',
-    description:
-      'ㅁㅇㄻㄴㅇㄹㅇㄴㄹ. ㅁㄴㅇㄹ ㅁㄴㅇㄻㅇㄹ. ㄴㅇㄻㄴㅇㄹㄴㅇㅇㄹ',
-    link: 'https://via.placeholder.com/150',
-    date: '2024.06.03',
-    source: '123일보 외 2',
-    quiz: '이 영상의 주요 인물은 누구인가요?',
-    answer: 1,
-    content: 1,
+    results: [
+      {
+        articleId: '1',
+        ok: true,
+        data: {
+          articleId: '1',
+          newsTitle: 'AI 혁신이 이끄는 산업의 미래',
+          date: '2024-06-01',
+          summary:
+            '인공지능 기술이 제조업, 의료, 금융 등 다양한 분야에서 혁신을 주도하고 있다. 특히 생성형 AI의 도입으로 생산성이 크게 향상되며, 새로운 일자리와 산업 기회가 창출되고 있다. 이러한 변화는 앞으로의 경제 구조에 중대한 영향을 미칠 것으로 예상된다.',
+          questions: [
+            'AI 기술이 발전하면서 어떤 분야에서 혁신이 일어나고 있나요?',
+            '생산성이 향상된 이유는 무엇인가요?',
+            'AI 도입으로 어떤 새로운 기회가 생기고 있나요?',
+            '제조업 외에 AI가 영향을 미치는 산업은 무엇인가요?',
+          ],
+          quiz: {
+            question: 'AI가 새로운 일자리와 산업 기회를 창출하고 있다.',
+            answer: 'YES',
+          },
+          tokensUsed: {
+            input: 577,
+            output: 199,
+          },
+          model: 'gpt-4o-mini-2024-07-18',
+          latencyMs: 7073,
+        },
+        error: null,
+      },
+      {
+        articleId: '2',
+        ok: true,
+        data: {
+          articleId: '2',
+          newsTitle: '도심 전기차 충전소 확대, 친환경 교통의 새로운 전환점',
+          date: '2024-06-02',
+          summary:
+            '정부와 민간 기업이 협력하여 도심 내 전기차 충전소 설치를 확대하고 있다. 이 노력은 탄소 배출을 줄이고 친환경 교통수단의 보급을 촉진하기 위한 것이다. 그러나 충전 속도와 비용 문제는 여전히 해결해야 할 과제로 남아 있어, 향후 개선이 필요하다.',
+          questions: [
+            '전기차 충전소 설치의 주요 목적은 무엇인가요?',
+            '충전 속도 문제는 어떤 과제로 남아 있나요?',
+            '정부와 민간 기업의 협력 내용은 무엇인가요?',
+            '친환경 교통수단 보급을 위한 다른 조치는 무엇이 있을까요?',
+          ],
+          quiz: {
+            question: '전기차 충전소 설치는 탄소 배출을 줄이기 위한 것이다.',
+            answer: 'YES',
+          },
+          tokensUsed: {
+            input: 617,
+            output: 219,
+          },
+          model: 'gpt-4o-mini-2024-07-18',
+          latencyMs: 7233,
+        },
+        error: null,
+      },
+      {
+        articleId: '33',
+        ok: false,
+        data: null,
+        error: '본문이 너무 짧습니다(최소 50자).',
+      },
+    ],
   },
 ];

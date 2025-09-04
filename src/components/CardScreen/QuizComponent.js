@@ -3,27 +3,43 @@ import colors from '../../styles/colors';
 import { View, Text, StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 
-const NewsComponent = ({ data }) => (
-  <View style={s.container}>
-    <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
-    <Text style={s.quiz}>{data.quiz}</Text>
+const QuizComponent = ({ data, style }) => {
+  if (data && data.ok === false) {
+    return (
+      <View style={[s.container, style]}>
+        <Text style={{ color: 'black', fontSize: 18 }}>
+          error : cannot found data
+        </Text>
+      </View>
+    );
+  }
 
-    <View style={s.btnwrap}>
-      <TouchableOpacity style={[s.btn, { backgroundColor: colors.pink600 }]}>
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-          아니예요
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[s.btn, { backgroundColor: colors.green600 }]}>
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-          맞아요
-        </Text>
-      </TouchableOpacity>
+  return (
+    <View style={[s.container, style]}>
+      <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
+      <Text style={s.quiz}>{data.quiz.question}</Text>
+
+      <View style={s.btnwrap}>
+        <TouchableOpacity style={[s.btn, { backgroundColor: colors.pink600 }]}>
+          <Text
+            style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}
+          >
+            아니예요
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[s.btn, { backgroundColor: colors.green600 }]}>
+          <Text
+            style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}
+          >
+            맞아요
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
-export default NewsComponent;
+export default QuizComponent;
 
 const s = StyleSheet.create({
   container: {

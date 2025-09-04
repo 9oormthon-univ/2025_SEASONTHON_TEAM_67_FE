@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,7 +12,7 @@ import { VIDEO_DATA } from '../assets/dummydata';
 
 import Scroll from '../components/CardScreen/Scroll';
 
-const FeedFooter = () => {
+const GradientFooter = () => {
   return (
     <>
       <LinearGradient
@@ -28,7 +28,9 @@ const FeedFooter = () => {
 
 export default function CardScreen({ navigation }) {
   const insets = useSafeAreaInsets();
-  
+  const [currentType, setCurrentType] = useState(null);
+  const scrollRef = useRef(null);
+
   return (
     <View style={s.flexContainer}>
       <ImageBackground
@@ -36,26 +38,11 @@ export default function CardScreen({ navigation }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
-        <View
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: 'rgba(255,249,249,0.5)',
-            zIndex: 0,
-          }}
-          pointerEvents="none"
+        <Scroll
+          data={VIDEO_DATA[0].results}
+          onTypeChange={setCurrentType}
+          scrollRef={scrollRef}
         />
-        <TouchableOpacity
-          style={[s.btn, { top: insets.top, zIndex: 2 }]}
-          // onPress={() => navigation.goBack() //스크롤 변경이후 작동안됨
-          onPress={() => navigation.navigate('HomeScreen')}
-        >
-          <Image
-            source={require('../assets/images/Common/arrow.png')}
-            style={s.img}
-          />
-        </TouchableOpacity>
-        <Scroll data={VIDEO_DATA} />
-        <FeedFooter />
       </ImageBackground>
     </View>
   );

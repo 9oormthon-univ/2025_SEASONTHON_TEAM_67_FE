@@ -1,11 +1,14 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Animated } from 'react-native';
-import FeedRow from './FeedRow';
+import { SafeAreaView, Animated, View } from 'react-native';
 
-const Scroll = ({ data }) => {
-  const { width, height } = useSafeAreaFrame();
+import NewsComponent from './NewsComponent';
+import QuizComponent from './QuizComponent';
+import ContentComponent from './ContentWrapper';
+import HomeScreenComponent from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
+
+const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
+  const { height } = useSafeAreaFrame();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
   const refFlatList = useRef(null);
@@ -30,7 +33,10 @@ const Scroll = ({ data }) => {
     [height],
   );
 
-  const keyExtractor = useCallback(item => `${item.id}`, []);
+  const keyExtractor = useCallback(
+    (item, idx) => `${item.id || 'home'}_${item.type || 'home'}_${idx}`,
+    [],
+  );
 
   const onScroll = useCallback(
     Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
@@ -39,35 +45,62 @@ const Scroll = ({ data }) => {
     [],
   );
 
-  const renderItem = useCallback(
-    ({ item, index }) => {
-      const { index: scrollIndex } = scrollInfo;
-      const isNext = Math.abs(index - scrollIndex) <= 1;
+  // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
+  const flatListData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
+    const result = [
+      { type: 'home', id: 'home' }, // 첫 번째 아이템: HomeScreenComponent
+    ];
+    data.forEach(item => {
+      if (item.ok === true && item.data) {
+        result.push({ ...item.data, type: 'news', id: item.id });
+        if (Math.random() < 0.5) {
+          result.push({ ...item.data, type: 'quiz', id: item.id });
+        }
+      }
+    });
+    return result;
+  }, [data]);
 
+  const renderItem = useCallback(
+    ({ item }) => {
+      if (item.type === 'home') {
+        return <HomeScreenComponent />;
+      }
+      if (item.type === 'quiz') {
+        return (
+          <ContentComponent
+            data={item}
+            RenderComponent={QuizComponent}
+            navigation={navigation}
+            scrollRef={scrollRef}
+          />
+        );
+      }
       return (
-        <FeedRow
+        <ContentComponent
           data={item}
-          // index={index}
-          // isNext={isNext}
-          // visible={scrollInfo}
-          // isVisible={scrollIndex === index}
+          RenderComponent={NewsComponent}
+          navigation={navigation}
+          scrollRef={scrollRef}
         />
       );
     },
-    [scrollInfo],
+    [navigation, scrollRef],
   );
 
+  // FlatList에 ref 연결
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        ref={refFlatList}
+        ref={scrollRef} // 연결
         automaticallyAdjustContentInsets
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig.current}
         onScroll={onScroll}
-        data={data}
+        data={flatListData}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
         decelerationRate="fast"

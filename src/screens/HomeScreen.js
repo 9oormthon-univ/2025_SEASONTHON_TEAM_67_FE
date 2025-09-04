@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,16 @@ import {
   Image,
   StatusBar,
   ImageBackground,
-  Animated,
-  PanResponder,
+  Platform,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaFrame,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import Cardnews from '../components/HomeScreen/Cardnews';
 
 export default function HomeScreen({ navigation }) {
-  // 데모 뉴스 데이터 (10개)
   // 데모 뉴스 데이터 (10개)
   const cards = [
     {
@@ -89,45 +91,28 @@ export default function HomeScreen({ navigation }) {
     },
   ];
 
-  const translateY = useRef(new Animated.Value(0)).current;
-
-  // PanResponder로 위로 스와이프 감지
-  const panResponder = useRef(
-    PanResponder.create({
-      onMoveShouldSetPanResponder: (_, gestureState) => {
-        // 위로 스와이프 시작 감지 (dy < -30)
-        return gestureState.dy < -30;
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (gestureState.dy < -30) {
-          // 애니메이션: 전체 화면 위로 슬라이드
-          Animated.timing(translateY, {
-            toValue: -1000, // 충분히 위로 이동
-            duration: 500,
-            useNativeDriver: true,
-          }).start(() => {
-            navigation.navigate('CardScreen');
-            translateY.setValue(0); // 원래 위치로 복구
-          });
-        }
-      },
+  // ContentComponent 스타일 참고하여 newsStyle 적용
+  const insets = useSafeAreaInsets();
+  const frame = useSafeAreaFrame();
+  const safeHeight = frame.height - insets.top - insets.bottom;
+  const newsStyle = useMemo(
+    () => ({
+      width: '100%',
+      height: Platform.OS === 'ios' ? safeHeight : safeHeight,
     }),
-  ).current;
+    [safeHeight],
+  );
 
   return (
-    <Animated.View
-      style={{ flex: 1, transform: [{ translateY }] }}
-      {...panResponder.panHandlers}
-    >
-      <ImageBackground
-        source={require('../assets/images/Common/background.png')}
-        style={s.bg}
-        resizeMode="cover"
-      >
-        <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView>
+        <ImageBackground
+          source={require('../assets/images/Common/background.png')}
+          resizeMode="cover"
+        >
           <StatusBar barStyle="light-content" />
 
-          <View style={s.body}>
+          <View style={[s.body, newsStyle]}>
             {/* ▶ 상단 버튼: 오른쪽 상단 고정 */}
             <View style={s.topBar}>
               <TouchableOpacity
@@ -187,16 +172,13 @@ export default function HomeScreen({ navigation }) {
               </Text>
             </View>
           </View>
-        </SafeAreaView>
-      </ImageBackground>
-    </Animated.View>
+        </ImageBackground>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const s = StyleSheet.create({
-  bg: { flex: 1 },
-  body: { flex: 1 },
-
   topBar: {
     position: 'absolute',
     top: 8,
