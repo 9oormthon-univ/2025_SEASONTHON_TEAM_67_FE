@@ -191,9 +191,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OHNEW_FE/Pods-OHNEW_FE-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OHNEW_FE/Pods-OHNEW_FE-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -230,9 +234,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OHNEW_FE/Pods-OHNEW_FE-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-OHNEW_FE/Pods-OHNEW_FE-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -262,7 +270,7 @@
 				CURRENT_PROJECT_VERSION = 250902100;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = OHNEW_FE/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "오뉴";
+				INFOPLIST_KEY_CFBundleDisplayName = "OH! NEW";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -295,7 +303,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 250902100;
 				INFOPLIST_FILE = OHNEW_FE/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "오뉴";
+				INFOPLIST_KEY_CFBundleDisplayName = "OH! NEW";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
