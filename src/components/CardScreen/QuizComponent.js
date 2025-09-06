@@ -8,7 +8,7 @@ const QuizComponent = ({ data, style }) => {
   const [selected, setSelected] = useState(null);
   const [disabled, setDisabled] = useState(false);
 
-  if (data && data.ok === false) {
+  if (!data.quiz) {
     return (
       <View style={[s.container, style]}>
         <Text style={{ color: 'black', fontSize: 18 }}>

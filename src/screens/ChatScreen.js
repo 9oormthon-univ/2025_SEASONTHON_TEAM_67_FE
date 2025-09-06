@@ -79,6 +79,7 @@ export default function ChatScreen({ navigation, route }) {
             style={{
               paddingHorizontal: 20,
               paddingVertical: 30,
+              maxHeight: 120,
             }}
           />
           <ChatWrapper messages={messages} />

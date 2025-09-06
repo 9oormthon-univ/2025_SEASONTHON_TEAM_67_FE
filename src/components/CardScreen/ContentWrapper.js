@@ -44,7 +44,9 @@ const ContentWrapper = ({
       scrollRef.current.scrollToIndex({ index: 0, animated: true });
     }
   };
-
+  React.useEffect(() => {
+    console.log('ContentWrapper RenderComponent:', RenderComponent);
+  }, [RenderComponent]);
   return (
     <View style={container}>
       {showArrow && (
@@ -68,7 +70,7 @@ const ContentWrapper = ({
         <FeedSideBar data={data} />
         <FeedFooter data={data} />
       </SafeAreaView>
-      {/* <GradientFooter /> */}
+      <GradientFooter />
     </View>
   );
 };

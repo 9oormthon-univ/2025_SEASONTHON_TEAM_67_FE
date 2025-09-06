@@ -44,35 +44,40 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
     }),
     [],
   );
+  // scroll data 출력
+  console.log('Scroll data:', data);
 
   // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
   const flatListData = useMemo(() => {
     if (!Array.isArray(data)) return [];
+
     const result = [
       { type: 'home', id: 'home' }, // 첫 번째 아이템: HomeScreenComponent
     ];
     data.forEach(item => {
-      if (item.ok === true && item.data) {
-        result.push({ ...item.data, type: 'news', id: item.id });
+      if (item.isSuccess === true && item.result) {
+        result.push({ ...item.result, type: 'news', id: item.id });
         if (Math.random() < 0.5) {
-          result.push({ ...item.data, type: 'quiz', id: item.id });
+          result.push({ ...item.result, type: 'quiz', id: item.id });
         }
       }
     });
     return result;
   }, [data]);
 
+  console.log('flatListData:', flatListData);
   const renderItem = useCallback(
     ({ item }) => {
       if (item.type === 'home') {
         return (
           <HomeScreen
+            key={`home_${item.id}`} // key 추가(필수는 아니지만 안전)
             navigation={navigation}
             onPressCard={itemId => {
               const idx = flatListData.findIndex(
                 d => d.id === itemId && d.type !== 'home',
               );
-              if (scrollRef && scrollRef.current && idx > 0) {
+              if (scrollRef && scrollRef.current && idx >= 0) {
                 scrollRef.current.scrollToIndex({ index: idx, animated: true });
               }
             }}
@@ -118,7 +123,7 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
         decelerationRate="fast"
         keyExtractor={keyExtractor}
         onEndReachedThreshold={0.9}
-        removeClippedSubviews
+        removeClippedSubviews={false}
         bounces={false}
       />
     </SafeAreaView>
