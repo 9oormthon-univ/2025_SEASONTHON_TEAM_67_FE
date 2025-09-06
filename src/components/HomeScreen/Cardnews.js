@@ -1,11 +1,6 @@
+// src/components/HomeScreen/Cardnews.js
 import React, { useCallback } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 export default function Cardnews({ data = [], onPressItem = () => {} }) {
   const renderItem = useCallback(
@@ -16,12 +11,17 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
         style={cs.cardWrap}
       >
         <View style={cs.card}>
+          {/* 제목 */}
           <Text numberOfLines={2} style={cs.title}>
             {item.title}
           </Text>
+
+          {/* 요약 */}
           <Text numberOfLines={4} style={cs.summary}>
             {item.summary}
           </Text>
+
+          {/* 해시태그 */}
           <View style={cs.footer}>
             {item.tag ? (
               <View style={cs.chip}>
@@ -32,22 +32,22 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
         </View>
       </TouchableOpacity>
     ),
-    [onPressItem],
+    [onPressItem]
   );
 
   return (
     <FlatList
       data={data}
-      keyExtractor={it => String(it.id)}
+      keyExtractor={(it) => String(it.id)}
       renderItem={renderItem}
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={cs.listContent}
-      style={{ flexGrow: 0, height: 200 }} // ⛔ 세로로 쭉 늘어지는 것 방지
+      style={{ flexGrow: 0 }}
       ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
       snapToAlignment="start"
       decelerationRate="fast"
-      snapToInterval={220 + 12}
+      snapToInterval={260 + 12} // 카드 너비 + 간격
     />
   );
 }
@@ -55,29 +55,37 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
 const cs = StyleSheet.create({
   listContent: {
     paddingHorizontal: 20,
-    marginTop: 12,
-    alignItems: 'center', // ✅ cross-axis 늘어짐 방지
+    alignItems: 'flex-start',
   },
   cardWrap: {
-    width: 220,
-    height: 200,
+    width: 260,  // 고정 너비
+    height: 180, // 고정 높이
+    alignSelf: 'flex-start',
   },
   card: {
     flex: 1,
-    padding: 16,
-    borderRadius: 25,
+    padding: 14,
+    borderRadius: 14,
     backgroundColor: '#F9FAFB',
     shadowColor: '#000',
     shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 25,
-    elevation: 4,
-    minHeight: 155, // 필요시 140~160 사이로 조절
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 2,
   },
-  title: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  summary: { marginTop: 6, fontSize: 13, lineHeight: 20, color: '#4B5563' },
+  title: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  summary: {
+    marginTop: 6,
+    fontSize: 13,
+    lineHeight: 18,
+    color: '#4B5563',
+  },
   footer: {
-    paddingTop: 8,
+    marginTop: 'auto',
     alignItems: 'flex-end',
   },
   chip: {
@@ -86,5 +94,9 @@ const cs = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
   },
-  chipText: { color: '#000', fontWeight: '600', fontSize: 11 },
+  chipText: {
+    color: '#000',
+    fontWeight: '600',
+    fontSize: 11,
+  },
 });

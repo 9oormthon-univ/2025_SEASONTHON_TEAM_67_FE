@@ -1,27 +1,18 @@
 // src/screens/HomeScreen.js
 import React, { useMemo } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  ImageBackground,
-  Platform,
+  View, Text, StyleSheet, TouchableOpacity, Image, StatusBar,
+  ImageBackground, Platform, StyleSheet as RNStyleSheet
 } from 'react-native';
 import {
-  SafeAreaView,
-  useSafeAreaFrame,
-  useSafeAreaInsets,
+  SafeAreaView, useSafeAreaFrame, useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Cardnews from '../components/HomeScreen/Cardnews';
 
-export default function HomeScreen({ navigation, onPressCard }) {
+export default function HomeScreen({ onPressCard }) {
   const nav = useNavigation();
 
-  // 데모 뉴스 데이터 (10개)
   const cards = [
     { id: '1',  title: '의무지출 5년간 100조… 재정 건전성에 부담돼요',
       summary: '지난 5년 동안 한국 정부의 의무지출이 약 100조 원 늘었어요. 법이나 제도로 정해져 자동 집행되다 보니 구조적으로 바꾸기 쉽지 않아요.',
@@ -60,59 +51,61 @@ export default function HomeScreen({ navigation, onPressCard }) {
   const frame = useSafeAreaFrame();
   const safeHeight = frame.height - insets.top - insets.bottom;
   const newsStyle = useMemo(
-    () => ({ width: '100%', height: Platform.OS === 'ios' ? safeHeight : safeHeight }),
+    () => ({ width: '100%', height: safeHeight }),
     [safeHeight]
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1}} edges={['top','bottom']}>
-        <ImageBackground
-          // source={require('../assets/images/Common/background.png')}
-          resizeMode="cover"
-          style={{ flex: 1 }}
-        >
-          <StatusBar barStyle="light-content" />
+    <View style={{ flex: 1, backgroundColor: '#000' /* 배경 폴백 */ }}>
+      {/* ✅ 배경은 화면 전체(노치 포함) 덮기 */}
+      <ImageBackground
+        source={require('../assets/images/Common/background.png')}
+        style={RNStyleSheet.absoluteFillObject}
+        resizeMode="cover"
+      />
 
-          <View style={[s.body, newsStyle]}>
-            {/* 상단 버튼 */}
-            <View style={s.topBar}>
-              <TouchableOpacity onPress={() => nav.navigate('BookmarkScreen')} style={s.topBtn}>
-                <Image source={require('../assets/images/HomeScreen/Icon_Bookmark.png')} style={s.icon} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => nav.navigate('SettingScreen')} style={[s.topBtn, { marginLeft: 16 }]}>
-                <Image source={require('../assets/images/HomeScreen/Icon_Settings.png')} style={s.icon} />
-              </TouchableOpacity>
-            </View>
+      {/* ✅ 콘텐츠만 SafeArea 안에 */}
+      <SafeAreaView style={{ flex: 1 }} edges={['top','bottom']}>
+        <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
-            {/* 중앙 영역 */}
-            <View style={s.centerArea}>
-              <View style={s.headerBlock}>
-                <Image source={require('../assets/images/HomeScreen/Icon_gbnam.jpg')} style={s.avatarImg} />
-                <Text style={s.helloTitle}>
-                  기범님  👋🏻{'\n'}
-                  오늘 준비 된 뉴스가 {cards.length}개 있어요
-                </Text>
-              </View>
-
-              <View style={{ height: 12 }} />
-
-              <Cardnews
-                data={cards}
-                onPressItem={(item) => {
-                  if (onPressCard) onPressCard(item.id);
-                  else nav.navigate('CardScreen', { itemId: item.id });
-                }}
-              />
-            </View>
-
-            {/* 하단 안내 */}
-            <View style={s.bottomHint}>
-              <Image source={require('../assets/images/HomeScreen/Icon_Arrow.png')} style={s.arrow} />
-              <Text style={s.hintText}>위로 스와이프해서 {'\n'}오늘의 뉴스 돌아보기</Text>
-            </View>
+        <View style={[s.body, newsStyle]}>
+          {/* 상단 버튼 */}
+          <View style={s.topBar}>
+            <TouchableOpacity onPress={() => nav.navigate('BookmarkScreen')} style={s.topBtn}>
+              <Image source={require('../assets/images/HomeScreen/Icon_Bookmark.png')} style={s.icon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => nav.navigate('SettingScreen')} style={[s.topBtn, { marginLeft: 16 }]}>
+              <Image source={require('../assets/images/HomeScreen/Icon_Settings.png')} style={s.icon} />
+            </TouchableOpacity>
           </View>
-        </ImageBackground>
+
+          {/* 중앙 영역 */}
+          <View style={s.centerArea}>
+            <View style={s.headerBlock}>
+              <Image source={require('../assets/images/HomeScreen/Icon_gbnam.jpg')} style={s.avatarImg} />
+              <Text style={s.helloTitle}>
+                기범님 반가워요 👋🏻{'\n'}
+                오늘 준비 된 뉴스가 {cards.length}개 있어요
+              </Text>
+            </View>
+
+            <View style={{ height: 12 }} />
+
+            <Cardnews
+              data={cards}
+              onPressItem={(item) => {
+                if (onPressCard) onPressCard(item.id);
+                else nav.navigate('CardScreen', { itemId: item.id });
+              }}
+            />
+          </View>
+
+          {/* 하단 안내 */}
+          <View style={s.bottomHint}>
+            <Image source={require('../assets/images/HomeScreen/Icon_Arrow.png')} style={s.arrow} />
+            <Text style={s.hintText}>위로 스와이프해서 {'\n'}오늘의 뉴스 돌아보기</Text>
+          </View>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -127,7 +120,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
-    elevation: 10, // Android 터치 우선 보장
+    elevation: 10,
   },
   topBtn: { padding: 4 },
   icon: { width: 32, height: 32, resizeMode: 'contain' },
@@ -138,7 +131,7 @@ const s = StyleSheet.create({
   helloTitle: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#111827',
+    color: '#fff',
     textAlign: 'center',
     marginTop: 12,
     marginBottom: 12,
@@ -147,5 +140,5 @@ const s = StyleSheet.create({
 
   bottomHint: { marginTop: 'auto', alignItems: 'center', justifyContent: 'center', paddingVertical: 16 },
   arrow: { width: 36, height: 36, marginBottom: 20, resizeMode: 'contain' },
-  hintText: { fontSize: 20, fontWeight: '800', color: '#111827', textAlign: 'center', lineHeight: 24 },
+  hintText: { fontSize: 20, fontWeight: '800', color: '#fff', textAlign: 'center', lineHeight: 24 },
 });

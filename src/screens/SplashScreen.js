@@ -19,7 +19,7 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/images/Common/background.png')}
+      source={require('../assets/images/SplashScreen/background.png')}
       style={s.bg}
       resizeMode="cover"
     >

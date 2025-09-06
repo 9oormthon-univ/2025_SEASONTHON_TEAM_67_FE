@@ -99,19 +99,19 @@ const s = StyleSheet.create({
   avatar: { width: 96, height: 96, borderRadius: 48, marginTop: 82, marginBottom: 12 },
 
   nameRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 16 },
-  name: { fontSize: 22, fontWeight: '800', color: '#111827' },
-  pencil: { width: 18, height: 18, resizeMode: 'contain', marginLeft: 6, tintColor: '#111827' },
+  name: { fontSize: 22, fontWeight: '800', color: '#fff' },
+  pencil: { width: 18, height: 18, resizeMode: 'contain', marginLeft: 6, tintColor: '#fff' },
 
   menu: { width: '100%', alignItems: 'center', gap: 14, marginTop: 50, marginBottom: 24 },
   menuItem: { paddingVertical: 8, paddingHorizontal: 12 },
-  menuText: { fontSize: 16, color: '#6B7280', fontWeight: '700', textAlign: 'center' },
+  menuText: { fontSize: 16, color: '#fff', fontWeight: '700', textAlign: 'center' },
 
   footer: { marginTop: 'auto', alignItems: 'center', paddingBottom: 10 },
-  meta1: { fontSize: 14, color: '#111827', marginBottom: 2 },
-  meta2: { fontSize: 16, color: '#111827', marginBottom: 30, fontWeight: '700' },
-  teamLabel: { fontSize: 14, color: '#111827', marginBottom: -2 },
-  teamName: { fontSize: 32, color: '#111827', fontWeight: '900', marginBottom: 30, letterSpacing: 0.5 },
+  meta1: { fontSize: 14, color: '#fff', marginBottom: 2 },
+  meta2: { fontSize: 16, color: '#fff', marginBottom: 30, fontWeight: '700' },
+  teamLabel: { fontSize: 14, color: '#fff', marginBottom: -2 },
+  teamName: { fontSize: 32, color: '#fff', fontWeight: '900', marginBottom: 30, letterSpacing: 0.5 },
 
   iconRow: { flexDirection: 'row', alignItems: 'center', marginTop: 10 },
-  footerIcon: { width: 34, height: 34, resizeMode: 'contain', tintColor: '#111827', marginBottom: 30 },
+  footerIcon: { width: 34, height: 34, resizeMode: 'contain', tintColor: '#fff', marginBottom: 30 },
 });
