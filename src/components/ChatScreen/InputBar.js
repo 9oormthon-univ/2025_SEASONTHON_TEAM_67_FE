@@ -60,7 +60,7 @@ export default function InputBar({
           }),
         }}
       >
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View style={{ flexDirection: 'wrap', flexWrap: 'wrap' }}>
           {showQuestions &&
             recommendedQuestions?.map((q, idx) => (
               <TouchableOpacity
