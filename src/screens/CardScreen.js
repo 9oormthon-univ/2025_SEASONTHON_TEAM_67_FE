@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { VIDEO_DATA } from '../assets/dummydata';
+// import { VIDEO_DATA } from '../assets/dummydata';
 
 import Scroll from '../components/CardScreen/Scroll';
+import axios from 'axios';
 
 const GradientFooter = () => {
   return (
@@ -29,8 +30,41 @@ const GradientFooter = () => {
 export default function CardScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const [currentType, setCurrentType] = useState(null);
+  const [data, setData] = useState(null);
   const scrollRef = useRef(null);
 
+  useEffect(() => {
+    const ids = [1, 2, 3, 4];
+    const fetchData = async () => {
+      try {
+        const responses = await Promise.all(
+          ids.map(id =>
+            axios.get(`https://hsmyspace.site/api/news/${id}`, {
+              headers: {
+                accept: '*/*',
+                Authorization:
+                  'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc1NzE1NDU3NiwiZXhwIjoxNzU3MjQwOTc2fQ.9-eCc07fm5EhZDD8SdpfuStWRppMkNPIcJudUvgNfes',
+              },
+            }),
+          ),
+        );
+        const dataArr = responses.map(res => res.data);
+        setData(dataArr);
+        console.log(
+          'data:',
+          dataArr.map(d => d.isSuccess),
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(() => {
+    if (data) {
+      console.log('CardScreen data:', data);
+    }
+  }, [data]);
   return (
     <View style={s.flexContainer}>
       <ImageBackground
@@ -39,7 +73,7 @@ export default function CardScreen({ navigation }) {
         resizeMode="cover"
       >
         <Scroll
-          data={VIDEO_DATA[0].results}
+          data={data}
           onTypeChange={setCurrentType}
           scrollRef={scrollRef}
         />

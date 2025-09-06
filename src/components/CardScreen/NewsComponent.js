@@ -6,7 +6,8 @@ const NewsComponent = ({
   fields = ['title', 'date', 'description'],
   style,
 }) => {
-  if (data && data.ok === false) {
+  console.log('NewsComponent data:', data);
+  if (data && data.isSuccess === false) {
     return (
       <View style={[s.container, style]}>
         <Text style={{ color: 'black', fontSize: 18 }}>
@@ -18,7 +19,7 @@ const NewsComponent = ({
 
   // 문장마다 분리
   const splitSentences = text => (text ? text.split(/(?<=[.!?…])\s+/) : []);
-  const titleSentences = splitSentences(data.newsTitle);
+  const titleSentences = splitSentences(data.title);
   const sentences = splitSentences(data.summary);
 
   return (
@@ -40,7 +41,7 @@ const NewsComponent = ({
             fontWeight: 'bold',
           }}
         >
-          {data.date}
+          {data.originalPublishedAt}
         </Text>
       )}
       {fields.includes('description') && (
@@ -62,6 +63,5 @@ export default NewsComponent;
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    maxHeight: 120,
   },
 });
