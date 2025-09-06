@@ -108,7 +108,7 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
 
   // FlatList에 ref 연결
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}
@@ -126,7 +126,7 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
         removeClippedSubviews={false}
         bounces={false}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
