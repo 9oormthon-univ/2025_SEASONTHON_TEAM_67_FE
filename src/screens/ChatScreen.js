@@ -84,7 +84,7 @@ export default function ChatScreen({ navigation, route }) {
               <View
                 style={{
                   flex: 1,
-                  backgroundColor: 'rgba(42, 32, 117, 0.3)',
+                  backgroundColor: 'rgba(30, 24, 78, 0.3)',
                 }}
               />
             </View>
@@ -121,6 +121,7 @@ export default function ChatScreen({ navigation, route }) {
             value={inputValue}
             onChangeText={setInputValue}
             onSend={handleSend}
+            recommendedQuestions={data.recommendedQuestions}
           />
         </SafeAreaView>
       </ImageBackground>

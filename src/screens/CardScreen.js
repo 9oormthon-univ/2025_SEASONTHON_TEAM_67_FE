@@ -72,12 +72,25 @@ export default function CardScreen({ navigation }) {
         style={s.flexContainer}
         resizeMode="cover"
       >
+        <View
+          style={{
+            ...StyleSheet.absoluteFillObject,
+            backgroundColor: 'transparent',
+          }}
+          pointerEvents="none"
+        >
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(61, 49, 158, 0.25)',
+            }}
+          />
+        </View>
         <Scroll
           data={data}
           onTypeChange={setCurrentType}
           scrollRef={scrollRef}
         />
-
       </ImageBackground>
     </View>
   );

@@ -9,17 +9,55 @@ import {
 } from 'react-native';
 import colors from '../../styles/colors';
 
-export default function InputBar({ value, onChangeText, onSend }) {
+export default function InputBar({
+  value,
+  onChangeText,
+  onSend,
+  recommendedQuestions,
+}) {
+  const [showQuestions, setShowQuestions] = React.useState(false);
+
   return (
     <View style={s.container}>
-      <View style={s.questionwapper}>
+      <TouchableOpacity
+        style={s.questionwapper}
+        onPress={() => setShowQuestions(prev => !prev)}
+        activeOpacity={0.7}
+      >
         <Text style={s.label}>추천 질문</Text>
         <Image
           source={require('../../assets/images/Common/arrow.png')}
-          style={[s.labelArrow, { transform: [{ rotate: '90deg' }] }]}
+          style={[
+            s.labelArrow,
+            { transform: [{ rotate: showQuestions ? '270deg' : '90deg' }] },
+          ]}
           tintColor="#fff"
         />
-      </View>
+      </TouchableOpacity>
+      {showQuestions && (
+        <View
+          style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10 }}
+        >
+          {recommendedQuestions?.map((q, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 16,
+                paddingHorizontal: 14,
+                paddingVertical: 8,
+                marginRight: 8,
+                marginBottom: 8,
+                opacity: 0.8,
+              }}
+              onPress={() => onChangeText(q)}
+              activeOpacity={0.8}
+            >
+              <Text style={{ color: '#222', fontSize: 14 }}>{q}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
       <View style={s.inputwrapper}>
         <View style={s.inputbar}>
           <TextInput

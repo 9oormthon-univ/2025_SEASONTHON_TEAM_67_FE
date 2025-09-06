@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
   bubble: {
     maxWidth: '80%',
-    backgroundColor: 'rgba(255,255,255,0.8)',
+    backgroundColor: 'rgba(255,255,255,0.9)',
     borderRadius: 15,
     boxShadow: '0px 0px 10px rgba(154, 108, 108, 0.25)', // RN에서는 shadow* 사용
     shadowColor: 'rgba(154, 108, 108, 0.25)',
