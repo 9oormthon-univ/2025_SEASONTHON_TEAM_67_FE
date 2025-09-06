@@ -44,6 +44,6 @@ const s = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#52525B',
+    color: '#fff',
   },
 });
