@@ -1,19 +1,62 @@
-import React from 'react';
-import { SafeAreaView, Text, TouchableOpacity, StyleSheet } from 'react-native';
+// src/screens/SplashScreen.js
+import React, { useEffect } from 'react';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  StatusBar,
+  View,
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function SplashScreen({ navigation }) {
+export default function SplashScreen() {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      navigation.replace('LoginScreen'); // ✅ 2초 뒤 로그인 화면으로 이동
+    }, 2000);
+
+    return () => clearTimeout(t);
+  }, [navigation]);
+
   return (
-    <SafeAreaView style={s.wrap}>
-      <Text style={s.title}>SplashScreen</Text>
-      <TouchableOpacity style={s.btn} onPress={() => navigation.replace('LoginScreen')}>
-        <Text style={s.btnText}>시작하기</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    <ImageBackground
+      source={require('../assets/images/SplashScreen/background.png')}
+      style={s.bg}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={s.wrap}>
+        <StatusBar barStyle="light-content" />
+
+        {/* 중앙 타이틀 */}
+        <View style={s.center}>
+          <Text style={s.title}>OHNEW</Text>
+          <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+        </View>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
+
 const s = StyleSheet.create({
-  wrap:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#fff'},
-  title:{fontSize:32,fontWeight:'800',marginBottom:24},
-  btn:{backgroundColor:'#111827',paddingVertical:12,paddingHorizontal:20,borderRadius:12},
-  btnText:{color:'#fff',fontWeight:'700'}
+  bg: { flex: 1 },
+  wrap: { flex: 1 },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 40,
+    fontWeight: '900',
+    color: '#E1F738',
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
 });
