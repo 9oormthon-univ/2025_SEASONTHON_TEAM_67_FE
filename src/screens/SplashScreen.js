@@ -19,7 +19,7 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={require('../assets/images/Common/background.png')}
+      source={require('../assets/images/SplashScreen/background.png')}
       style={s.bg}
       resizeMode="cover"
     >
@@ -38,12 +38,12 @@ const s = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: '900',
-    color: '#111827',
+    color: '#E1F738',
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#52525B',
+    color: '#fff',
   },
 });
