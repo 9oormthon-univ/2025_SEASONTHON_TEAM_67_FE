@@ -1,29 +1,89 @@
-import React from 'react';
+import React, { useState } from 'react';
 import colors from '../../styles/colors';
-import { View, Text, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import ToastAlert from './ToastAlert';
 
-const NewsComponent = ({ data }) => (
-  <View style={s.container}>
-    <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
-    <Text style={s.quiz}>{data.quiz}</Text>
+const QuizComponent = ({ data, style }) => {
+  const [toast, setToast] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
-    <View style={s.btnwrap}>
-      <TouchableOpacity style={[s.btn, { backgroundColor: colors.pink600 }]}>
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-          아니예요
+  if (data && data.ok === false) {
+    return (
+      <View style={[s.container, style]}>
+        <Text style={{ color: 'black', fontSize: 18 }}>
+          error : cannot found data
         </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[s.btn, { backgroundColor: colors.green600 }]}>
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 20 }}>
-          맞아요
-        </Text>
-      </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const handleAnswer = answer => {
+    setSelected(answer);
+    setDisabled(true);
+    if (data.quiz.answer === answer) {
+      setToast('정답이에요! 집중력이 대단해요 👏');
+    } else {
+      setToast('오답이에요🥲 다시 읽어 볼까요?');
+    }
+    setTimeout(() => setToast(null), 1500);
+  };
+
+  return (
+    <View style={[s.container, style]}>
+      <ToastAlert message={toast} />
+      <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
+      <Text style={s.quiz}>{data.quiz.question}</Text>
+
+      <View style={s.btnwrap}>
+        <TouchableOpacity
+          style={[
+            s.btn,
+            disabled && data.quiz.answer !== 'NO'
+              ? { backgroundColor: '#fff' }
+              : { backgroundColor: colors.pink600 },
+          ]}
+          onPress={() => handleAnswer('NO')}
+          disabled={disabled}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: disabled && data.quiz.answer !== 'NO' ? '#222' : '#111',
+            }}
+          >
+            아니예요
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            s.btn,
+            disabled && data.quiz.answer !== 'YES'
+              ? { backgroundColor: '#fff' }
+              : { backgroundColor: colors.green600 },
+          ]}
+          onPress={() => handleAnswer('YES')}
+          disabled={disabled}
+        >
+          <Text
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              fontSize: 20,
+              color: disabled && data.quiz.answer !== 'YES' ? '#222' : '#111',
+            }}
+          >
+            맞아요
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
-export default NewsComponent;
+export default QuizComponent;
 
 const s = StyleSheet.create({
   container: {

@@ -1,11 +1,17 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, Text, StyleSheet, ImageBackground, StatusBar } from 'react-native';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  StatusBar,
+} from 'react-native';
 
 export default function SplashScreen({ navigation }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       //navigation.replace('LoginScreen'); // 2초 뒤 로그인 화면으로 이동
-      navigation.replace('HomeScreen'); // 2초 뒤 로그인 화면으로 이동
+      navigation.replace('CardScreen'); // 2초 뒤 로그인 화면으로 이동
     }, 2000);
 
     return () => clearTimeout(timer); // cleanup
