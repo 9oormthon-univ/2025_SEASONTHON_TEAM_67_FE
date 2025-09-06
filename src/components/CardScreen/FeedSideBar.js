@@ -41,16 +41,17 @@ export default FeedSideBar;
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 80 : 80, //이후 수정
+    bottom: Platform.OS === 'ios' ? 50 : 50, //이후 수정
     alignSelf: 'flex-end',
     alignItems: 'center',
     gap: 20,
-    right: 24,
+    right: 20,
   },
   icon: {
     width: 32,
     height: 32,
     marginBottom: 2,
     resizeMode: 'contain',
+    tintColor: 'white',
   },
 });

@@ -36,6 +36,7 @@ const GradientFooter = ({ isHome }) => {
     <View style={s.footer}>
       <Animated.View
         style={[StyleSheet.absoluteFill, { opacity: normalOpacity }]}
+        pointerEvents="none"
       >
         <LinearGradient
           colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
@@ -47,6 +48,7 @@ const GradientFooter = ({ isHome }) => {
       </Animated.View>
       <Animated.View
         style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]}
+        pointerEvents="none"
       >
         <LinearGradient
           colors={['rgba(186,227,252,0.0)', 'rgba(135,206,250,0.2)']}

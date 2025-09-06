@@ -77,6 +77,7 @@ export default function CardScreen({ navigation }) {
           onTypeChange={setCurrentType}
           scrollRef={scrollRef}
         />
+
       </ImageBackground>
     </View>
   );

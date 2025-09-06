@@ -11,7 +11,7 @@ const QuizComponent = ({ data, style }) => {
   if (!data.quiz) {
     return (
       <View style={[s.container, style]}>
-        <Text style={{ color: 'black', fontSize: 18 }}>
+        <Text style={{ color: 'gray', fontSize: 18 }}>
           error : cannot found data
         </Text>
       </View>

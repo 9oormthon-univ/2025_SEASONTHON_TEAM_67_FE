@@ -49,6 +49,7 @@ const ContentWrapper = ({
   }, [RenderComponent]);
   return (
     <View style={[container, { flex: 1 }]}>
+
       {showArrow && (
         <TouchableOpacity
           style={[styles.btn, { top: insets.top, zIndex: 2 }]}

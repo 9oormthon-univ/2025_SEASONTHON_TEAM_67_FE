@@ -5,13 +5,13 @@ const NewsComponent = ({
   data,
   fields = ['title', 'date', 'description'],
   style,
-  titlestyle = 'black',
+  titlestyle = 'white',
 }) => {
   console.log('NewsComponent data:', data);
   if (data && data.isSuccess === false) {
     return (
       <View style={[s.container, style]}>
-        <Text style={{ color: 'black', fontSize: 18 }}>
+        <Text style={{ color: 'gray', fontSize: 18 }}>
           error : cannot found data
         </Text>
       </View>

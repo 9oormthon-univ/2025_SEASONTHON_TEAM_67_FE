@@ -80,13 +80,14 @@ const styles = StyleSheet.create({
   source: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.gray000,
+    color: colors.white000,
   },
   link: {
     fontSize: 15,
-    color: '#222',
+    color: colors.white000,
     textDecorationLine: 'underline',
     marginTop: 4,
+    opacity:0.7
   },
   profileGroup: {
     flexDirection: 'row',

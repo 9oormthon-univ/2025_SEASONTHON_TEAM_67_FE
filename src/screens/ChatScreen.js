@@ -76,54 +76,17 @@ export default function ChatScreen({ navigation, route }) {
           >
             <View
               style={{
-                flex: 1,
+                ...StyleSheet.absoluteFillObject,
                 backgroundColor: 'transparent',
               }}
+              pointerEvents="none"
             >
-              {/* Linear gradient using View with absolute positioning */}
               <View
                 style={{
-                  ...StyleSheet.absoluteFillObject,
-                  backgroundColor: 'transparent',
+                  flex: 1,
+                  backgroundColor: 'rgba(42, 32, 117, 0.3)',
                 }}
-                pointerEvents="none"
-              >
-                {/* Use expo-linear-gradient or fallback to manual gradient */}
-                {/* If you have expo-linear-gradient, use it here for better performance */}
-                {/* Otherwise, use a View with backgroundColor as fallback */}
-                {/* Example with expo-linear-gradient: */}
-                {/* 
-                <LinearGradient
-                  colors={[
-                    'rgba(42, 32, 117, 0.8)',
-                    'rgba(0, 0, 0, 0.8)'
-                  ]}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={StyleSheet.absoluteFill}
-                />
-                */}
-                {/* Fallback: */}
-                <View
-                  style={{
-                    flex: 1,
-                    backgroundColor: 'rgba(42, 32, 117, 0.4)',
-                  }}
-                />
-                <View
-                  style={{
-                    ...StyleSheet.absoluteFillObject,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    opacity: 0.64,
-                  }}
-                />
-                {/* White tint overlay */}
-                <View
-                  style={{
-                    ...StyleSheet.absoluteFillObject,
-                  }}
-                />
-              </View>
+              />
             </View>
           </ImageBackground>
         </View>
