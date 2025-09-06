@@ -1,19 +1,41 @@
-import React from 'react';
-import { SafeAreaView, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import {
+  SafeAreaView,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  StatusBar,
+} from 'react-native';
 
 export default function LoginScreen({ navigation }) {
+
   return (
-    <SafeAreaView style={s.wrap}>
-      <Text style={s.title}>LoginScreen</Text>
-      <TouchableOpacity style={s.btn} onPress={() => navigation.replace('HomeScreen')}>
-        <Text style={s.btnText}>홈으로</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+    <ImageBackground
+      source={require('../assets/images/SplashScreen/background.png')}
+      style={s.bg}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={s.wrap}>
+        <StatusBar barStyle="light-content" />
+        <Text style={s.title}>OHNEW</Text>
+        <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
+
 const s = StyleSheet.create({
-  wrap:{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#fff'},
-  title:{fontSize:28,fontWeight:'800',marginBottom:24},
-  btn:{backgroundColor:'#111827',paddingVertical:12,paddingHorizontal:20,borderRadius:12},
-  btnText:{color:'#fff',fontWeight:'700'}
+  bg: { flex: 1 },
+  wrap: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  title: {
+    fontSize: 40,
+    fontWeight: '900',
+    color: '#E1F738',
+    marginBottom: 12,
+  },
+  subtitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
 });
