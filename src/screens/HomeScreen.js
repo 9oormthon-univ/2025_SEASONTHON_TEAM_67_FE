@@ -60,57 +60,60 @@ export default function HomeScreen({ navigation, onPressCard }) {
   const frame = useSafeAreaFrame();
   const safeHeight = frame.height - insets.top - insets.bottom;
   const newsStyle = useMemo(
-    () => ({ width: '100%', height: Platform.OS === 'ios' ? frame.height : safeHeight }),
+    () => ({ width: '100%', height: Platform.OS === 'ios' ? safeHeight : safeHeight }),
     [safeHeight]
   );
 
   return (
-    <View style={[newsStyle,{ flex: 1 },]}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1}} edges={['top','bottom']}>
         <ImageBackground
           // source={require('../assets/images/Common/background.png')}
           resizeMode="cover"
           style={{ flex: 1 }}
-        />
-          {/*<StatusBar barStyle="light-content" />*/}
+        >
+          <StatusBar barStyle="light-content" />
 
-        <SafeAreaView style={{ flex : 1}}>
-          {/* 상단 버튼 */}
-          <View style={s.topBar}>
-            <TouchableOpacity onPress={() => nav.navigate('BookmarkScreen')} style={s.topBtn}>
-              <Image source={require('../assets/images/HomeScreen/Icon_Bookmark.png')} style={s.icon} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => nav.navigate('SettingScreen')} style={[s.topBtn, { marginLeft: 16 }]}>
-              <Image source={require('../assets/images/HomeScreen/Icon_Settings.png')} style={s.icon} />
-            </TouchableOpacity>
-          </View>
-
-          {/* 중앙 영역 */}
-          <View style={s.centerArea}>
-            <View style={s.headerBlock}>
-              <Image source={require('../assets/images/HomeScreen/Icon_gbnam.jpg')} style={s.avatarImg} />
-              <Text style={s.helloTitle}>
-                기범님 반가워요👋🏻{'\n'}
-                오늘 준비 된 뉴스가 {cards.length}개 있어요
-              </Text>
+          <View style={[s.body, newsStyle]}>
+            {/* 상단 버튼 */}
+            <View style={s.topBar}>
+              <TouchableOpacity onPress={() => nav.navigate('BookmarkScreen')} style={s.topBtn}>
+                <Image source={require('../assets/images/HomeScreen/Icon_Bookmark.png')} style={s.icon} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => nav.navigate('SettingScreen')} style={[s.topBtn, { marginLeft: 16 }]}>
+                <Image source={require('../assets/images/HomeScreen/Icon_Settings.png')} style={s.icon} />
+              </TouchableOpacity>
             </View>
 
-            <View style={{ height: 12 }} />
+            {/* 중앙 영역 */}
+            <View style={s.centerArea}>
+              <View style={s.headerBlock}>
+                <Image source={require('../assets/images/HomeScreen/Icon_gbnam.jpg')} style={s.avatarImg} />
+                <Text style={s.helloTitle}>
+                  기범님  👋🏻{'\n'}
+                  오늘 준비 된 뉴스가 {cards.length}개 있어요
+                </Text>
+              </View>
 
-            <Cardnews
-              data={cards}
-              onPressItem={(item) => {
-                if (onPressCard) onPressCard(item.id);
-                else nav.navigate('CardScreen', { itemId: item.id });
-              }}
-            />
-          </View>
+              <View style={{ height: 12 }} />
 
-          {/* 하단 안내 */}
-          <View style={s.bottomHint}>
-            <Image source={require('../assets/images/HomeScreen/Icon_Arrow.png')} style={s.arrow} />
-            <Text style={s.hintText}>위로 스와이프해서 {'\n'}오늘의 뉴스 돌아보기</Text>
+              <Cardnews
+                data={cards}
+                onPressItem={(item) => {
+                  if (onPressCard) onPressCard(item.id);
+                  else nav.navigate('CardScreen', { itemId: item.id });
+                }}
+              />
+            </View>
+
+            {/* 하단 안내 */}
+            <View style={s.bottomHint}>
+              <Image source={require('../assets/images/HomeScreen/Icon_Arrow.png')} style={s.arrow} />
+              <Text style={s.hintText}>위로 스와이프해서 {'\n'}오늘의 뉴스 돌아보기</Text>
+            </View>
           </View>
-        </SafeAreaView>
+        </ImageBackground>
+      </SafeAreaView>
     </View>
   );
 }
