@@ -6,6 +6,7 @@ const NewsComponent = ({
   fields = ['title', 'date', 'description'],
   style,
   titlestyle = 'white',
+  titleEllipsis = false, // 추가: 기본값 false
 }) => {
   console.log('NewsComponent data:', data);
   if (data && data.isSuccess === false) {
@@ -26,18 +27,25 @@ const NewsComponent = ({
   // 색상 결정
   const color = titlestyle === 'white' ? '#fff' : '#111';
 
+  // 최대 2줄까지만 표시, 넘으면 ... 처리
+  const renderWithEllipsis = (sentences, maxLines = 2) => {
+    if (sentences.length <= maxLines) {
+      return sentences.join('\n');
+    }
+    return sentences.slice(0, maxLines).join('\n') + '...';
+  };
+
   return (
     <View style={[s.container, style]}>
       {fields.includes('title') && (
         <Text
-          style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10, color }}
+          style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8, color }}
+          numberOfLines={titleEllipsis ? 2 : undefined}
+          ellipsizeMode={titleEllipsis ? 'tail' : undefined}
         >
-          {titleSentences.map((sentence, idx) => (
-            <React.Fragment key={`title-${idx}`}>
-              {sentence}
-              {idx < titleSentences.length - 1 ? '\n' : ''}
-            </React.Fragment>
-          ))}
+          {titleEllipsis
+            ? renderWithEllipsis(titleSentences, 2)
+            : titleSentences.join('\n')}
         </Text>
       )}
       {fields.includes('date') && (
@@ -52,12 +60,12 @@ const NewsComponent = ({
         </Text>
       )}
       {fields.includes('description') && (
-        <Text style={{ fontSize: 16, marginTop: 40, color }}>
+        <Text style={{ fontSize: 16, marginTop: 30, color }}>
           {sentences.map((sentence, idx) => (
-            <React.Fragment key={`desc-${idx}`}>
+            <Text key={idx} style={{ color, fontSize: 16 }}>
               {sentence}
-              {idx < sentences.length - 1 ? '\n\n' : ''}
-            </React.Fragment>
+              {'\n\n'}
+            </Text>
           ))}
         </Text>
       )}
