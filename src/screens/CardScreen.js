@@ -8,10 +8,8 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// import { VIDEO_DATA } from '../assets/dummydata';
-
 import Scroll from '../components/CardScreen/Scroll';
-import axios from 'axios';
+import { apiFetch } from '../components/Common/apiClient'; // ✅ apiFetch 사용
 
 const GradientFooter = () => {
   return (
@@ -34,37 +32,23 @@ export default function CardScreen({ navigation }) {
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    const ids = [1, 2, 3, 4];
-    const fetchData = async () => {
+    let alive = true;
+    (async () => {
       try {
-        const responses = await Promise.all(
-          ids.map(id =>
-            axios.get(`https://hsmyspace.site/api/news/${id}`, {
-              headers: {
-                accept: '*/*',
-                Authorization:
-                  'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImlhdCI6MTc1NzE1NDU3NiwiZXhwIjoxNzU3MjQwOTc2fQ.9-eCc07fm5EhZDD8SdpfuStWRppMkNPIcJudUvgNfes',
-              },
-            }),
-          ),
-        );
-        const dataArr = responses.map(res => res.data);
-        setData(dataArr);
-        console.log(
-          'data:',
-          dataArr.map(d => d.isSuccess),
-        );
+        // apiFetch로 오늘의 뉴스 요청
+        const { result } = await apiFetch('/api/news/today', { method: 'GET' });
+        if (!alive) return;
+        setData(result); // result를 data로 설정
+        console.log('CardScreen data:', result);
       } catch (error) {
         console.error(error);
       }
+    })();
+    return () => {
+      alive = false;
     };
-    fetchData();
   }, []);
-  useEffect(() => {
-    if (data) {
-      console.log('CardScreen data:', data);
-    }
-  }, [data]);
+
   return (
     <View style={s.flexContainer}>
       <ImageBackground

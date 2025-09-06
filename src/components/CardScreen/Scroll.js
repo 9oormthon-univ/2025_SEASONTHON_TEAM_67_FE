@@ -121,11 +121,12 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
     const result = [
       { type: 'home', id: 'home' }, // 첫 번째 아이템: HomeScreenComponent
     ];
+
     data.forEach(item => {
-      if (item.isSuccess === true && item.result) {
-        result.push({ ...item.result, type: 'news', id: item.id });
+      if (item) {
+        result.push({ ...item, type: 'news', id: item.id });
         if (Math.random() < 0.5) {
-          result.push({ ...item.result, type: 'quiz', id: item.id });
+          result.push({ ...item, type: 'quiz', id: item.id });
         }
       }
     });
