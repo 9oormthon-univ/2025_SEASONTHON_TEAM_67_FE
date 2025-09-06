@@ -8,18 +8,17 @@ import {
 } from 'react-native';
 import colors from '../../styles/colors';
 import { Image } from 'react-native';
+
 const FeedFooter = ({ data }) => {
   return (
     <View style={styles.Container}>
       <View style={styles.sourceRow}>
         <View style={styles.profileGroup}>
           <Image
-            source={{
-              uri: 'https://via.placeholder.com/40/8BC34A/ffffff?text=1',
-            }}
+            source={require('../../assets/images/Common/sbs_icon.png')}
             style={[styles.profileImg, { left: 0, zIndex: 3 }]}
           />
-          <Image
+          {/* <Image
             source={{
               uri: 'https://via.placeholder.com/40/2196F3/222222?text=2',
             }}
@@ -36,12 +35,13 @@ const FeedFooter = ({ data }) => {
               styles.profileImg,
               { left: 32, zIndex: 1, position: 'absolute' },
             ]}
-          />
+          /> */}
         </View>
-        <Text style={styles.source}>{data?.source}</Text>
+        {/* <Text style={styles.source}>{data?.source}</Text> //api 열 추가이후 수정 */}
+        <Text style={styles.source}>SBS</Text>
       </View>
       <TouchableOpacity
-        onPress={() => data?.link && Linking.openURL(data.link)}
+        onPress={() => data?.originalUrl && Linking.openURL(data.originalUrl)}
       >
         <Text style={styles.link}>원문 기사 링크 바로가기 &gt;</Text>
       </TouchableOpacity>
@@ -63,14 +63,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
-    gap: 8,
+    gap: 12,
   },
   profileImg: {
     width: 32,
     height: 32,
     borderRadius: 16,
     marginRight: 8,
-    backgroundColor: '#eee',
+    backgroundColor: '#ffffffff',
+    shadowColor: '#b7ababff',
+    shadowOpacity: 0.018,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 25,
+    elevation: 4,
   },
   source: {
     fontSize: 18,
@@ -86,9 +91,6 @@ const styles = StyleSheet.create({
   profileGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 56,
     height: 32,
-    marginRight: 8,
-    position: 'relative',
   },
 });

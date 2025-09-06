@@ -17,6 +17,7 @@ export default function InputBar({ value, onChangeText, onSend }) {
         <Image
           source={require('../../assets/images/Common/arrow.png')}
           style={[s.labelArrow, { transform: [{ rotate: '90deg' }] }]}
+          tintColor="#fff"
         />
       </View>
       <View style={s.inputwrapper}>
@@ -33,6 +34,7 @@ export default function InputBar({ value, onChangeText, onSend }) {
           <Image
             source={require('../../assets/images/ChatScreen/arrow_circle.png')}
             style={s.arrow}
+            tintColor="#fff"
           />
         </TouchableOpacity>
       </View>
@@ -59,7 +61,7 @@ const s = StyleSheet.create({
   label: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: colors.black000,
+    color: colors.white000,
   },
   labelArrow: {
     width: 20,

@@ -1,28 +1,88 @@
-import React, { useRef, useState, useCallback, useMemo } from 'react';
+import React, {
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
-import { SafeAreaView, Animated, View } from 'react-native';
+import { StyleSheet, Animated, View } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
 import ContentComponent from './ContentWrapper';
 import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
 
+const GradientFooter = ({ isHome }) => {
+  const animatedValue = useRef(new Animated.Value(isHome ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.timing(animatedValue, {
+      toValue: isHome ? 1 : 0,
+      duration: 700,
+      useNativeDriver: false,
+    }).start();
+  }, [isHome, animatedValue]);
+
+  // 두 개의 Animated.View + LinearGradient를 겹치고 opacity로 cross-fade
+  const homeOpacity = animatedValue;
+  const normalOpacity = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
+
+  return (
+    <View style={s.footer}>
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { opacity: normalOpacity }]}
+      >
+        <LinearGradient
+          colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      </Animated.View>
+      <Animated.View
+        style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]}
+      >
+        <LinearGradient
+          colors={['rgba(186,227,252,0.0)', 'rgba(135,206,250,0.2)']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={StyleSheet.absoluteFill}
+          pointerEvents="none"
+        />
+      </Animated.View>
+    </View>
+  );
+};
+
 const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
   const scrollY = useRef(new Animated.Value(0)).current;
   const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
+  const [isHome, setIsHome] = useState(true); // 현재 보여지는 아이템이 home인지 체크
+  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
   const refFlatList = useRef(null);
 
   const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
 
-  const onViewableItemsChanged = useCallback(({ changed }) => {
-    if (changed.length > 0) {
-      setScrollInfo({
-        isViewable: changed[0].isViewable,
-        index: changed[0].index,
-      });
-    }
-  }, []);
+  const onViewableItemsChanged = useCallback(
+    ({ changed }) => {
+      if (changed.length > 0) {
+        setScrollInfo({
+          isViewable: changed[0].isViewable,
+          index: changed[0].index,
+        });
+        // home 여부 판단
+        setIsHome(flatListData[changed[0].index]?.type === 'home');
+      }
+    },
+    [flatListData],
+  );
 
   const getItemLayout = useCallback(
     (_, index) => ({
@@ -38,9 +98,14 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
     [],
   );
 
+  // 스크롤 위치에 따라 isScrolled 상태 변경
   const onScroll = useCallback(
     Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
       useNativeDriver: true,
+      listener: event => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        setIsScrolled(offsetY > 10); // 10px 이상 스크롤 시 true
+      },
     }),
     [],
   );
@@ -112,7 +177,7 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        ref={scrollRef} // 연결
+        ref={scrollRef}
         automaticallyAdjustContentInsets
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig.current}
@@ -126,8 +191,19 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
         removeClippedSubviews={false}
         bounces={false}
       />
+      <GradientFooter isHome={!isScrolled} />
     </View>
   );
 };
 
 export default Scroll;
+const s = StyleSheet.create({
+  flexContainer: { flex: 1, backgroundColor: 'black' },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+  },
+});
