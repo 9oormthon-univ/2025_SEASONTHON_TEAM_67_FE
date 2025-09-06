@@ -16,7 +16,7 @@ import {
 } from 'react-native-safe-area-context';
 import Cardnews from '../components/HomeScreen/Cardnews';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, onPressCard }) {
   // 데모 뉴스 데이터 (10개)
   const cards = [
     {
@@ -155,9 +155,13 @@ export default function HomeScreen({ navigation }) {
               {/* Cardnews */}
               <Cardnews
                 data={cards}
-                onPressItem={item =>
-                  navigation.navigate('CardScreen', { item })
-                }
+                onPressItem={item => {
+                  if (onPressCard) {
+                    onPressCard(item.id); // Scroll에서 전달받은 함수로 해당 id로 이동
+                  } else if (navigation) {
+                    navigation.navigate('CardScreen', { itemId: item.id }); // 네비게이터에서 직접 호출 시
+                  }
+                }}
               />
             </View>
 

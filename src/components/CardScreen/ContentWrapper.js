@@ -16,6 +16,17 @@ import React, { useMemo } from 'react';
 import FeedSideBar from './FeedSideBar';
 import FeedFooter from './FeedFooter';
 
+// GradientFooter 컴포넌트 (재렌더링 방지: useMemo로 생성)
+const GradientFooter = React.memo(() => (
+  <LinearGradient
+    colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
+    start={{ x: 0.5, y: 0 }}
+    end={{ x: 0.5, y: 1 }}
+    style={styles.footer}
+    pointerEvents="none"
+  />
+));
+
 const ContentWrapper = ({
   data,
   RenderComponent,
@@ -57,6 +68,7 @@ const ContentWrapper = ({
         <FeedSideBar data={data} />
         <FeedFooter data={data} />
       </SafeAreaView>
+      {/* <GradientFooter /> */}
     </View>
   );
 };

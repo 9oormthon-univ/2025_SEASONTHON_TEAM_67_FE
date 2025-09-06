@@ -5,7 +5,7 @@ import { SafeAreaView, Animated, View } from 'react-native';
 import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
 import ContentComponent from './ContentWrapper';
-import HomeScreenComponent from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
+import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
 
 const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
@@ -65,7 +65,19 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
   const renderItem = useCallback(
     ({ item }) => {
       if (item.type === 'home') {
-        return <HomeScreenComponent />;
+        return (
+          <HomeScreen
+            navigation={navigation}
+            onPressCard={itemId => {
+              const idx = flatListData.findIndex(
+                d => d.id === itemId && d.type !== 'home',
+              );
+              if (scrollRef && scrollRef.current && idx > 0) {
+                scrollRef.current.scrollToIndex({ index: idx, animated: true });
+              }
+            }}
+          />
+        );
       }
       if (item.type === 'quiz') {
         return (
@@ -86,7 +98,7 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
         />
       );
     },
-    [navigation, scrollRef],
+    [navigation, scrollRef, flatListData],
   );
 
   // FlatList에 ref 연결
