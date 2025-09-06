@@ -34,7 +34,14 @@ const NewsComponent = ({
         </Text>
       )}
       {fields.includes('date') && (
-        <Text style={{ color: '#888', fontWeight: 'bold' }}>{data.date}</Text>
+        <Text
+          style={{
+            color: '#888',
+            fontWeight: 'bold',
+          }}
+        >
+          {data.date}
+        </Text>
       )}
       {fields.includes('description') && (
         <Text style={{ fontSize: 16, marginTop: 40 }}>
@@ -55,5 +62,6 @@ export default NewsComponent;
 const s = StyleSheet.create({
   container: {
     flex: 1,
+    maxHeight: 120,
   },
 });

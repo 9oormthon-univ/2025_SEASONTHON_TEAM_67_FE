@@ -52,12 +52,18 @@ export default function ChatScreen({ navigation, route }) {
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: 'rgba(91, 111, 88, 0.1)', // gray tint with 40% opacity
+            backgroundColor: 'rgba(160, 172, 158, 0.1)',
             zIndex: 1,
           }}
           pointerEvents="none"
         />
-        <SafeAreaView style={{ flex: 1, padding: '20', zIndex: 2 }}>
+        <SafeAreaView
+          style={{
+            flex: 1,
+            padding: '20',
+            zIndex: 2,
+          }}
+        >
           <TouchableOpacity
             style={[s.btn, { top: insets.top }]}
             onPress={() => navigation.goBack()}
@@ -88,7 +94,10 @@ export default function ChatScreen({ navigation, route }) {
 }
 
 const s = StyleSheet.create({
-  flexContainer: { flex: 1, backgroundColor: 'black' },
+  flexContainer: {
+    flex: 1,
+    backgroundColor: 'black',
+  },
   footer: {
     position: 'absolute',
     left: 0,
