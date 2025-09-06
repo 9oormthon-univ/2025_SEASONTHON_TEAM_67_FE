@@ -46,9 +46,12 @@ export default function ChatScreen({ navigation, route }) {
     setTimeout(() => {
       setMessages(prev => [
         ...prev,
-        { sender: 'ai', text: 'AI 응답 예시입니다.' },
+        {
+          sender: 'ai',
+          text: '귀멸의 칼날이 그렇게 빨리 흥행한 건 몇 가지 이유가 있어요. 먼저 애니메이션이랑 극장판이 연달아 대박이 나면서 원작 만화까지 사람들이 몰려봤고, 코로나 시기에 집에서 보는 문화랑 스트리밍 서비스가 잘 맞아떨어졌어요. 거기에다 화려한 그림체랑 몰입감 있는 스토리 덕분에 입소문이 엄청 퍼져서 기록적인 인기를 끌게 된 거예요.',
+        },
       ]);
-    }, 1000);
+    }, 2000);
   };
 
   return (

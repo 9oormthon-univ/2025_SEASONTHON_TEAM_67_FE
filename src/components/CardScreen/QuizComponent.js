@@ -21,7 +21,7 @@ const QuizComponent = ({ data, style }) => {
   const handleAnswer = answer => {
     setSelected(answer);
     setDisabled(true);
-    if (data.quiz.answer === answer) {
+    if (data.answer === answer) {
       setToast('정답이에요! 집중력이 대단해요 👏');
     } else {
       setToast('오답이에요🥲 다시 읽어 볼까요?');
@@ -32,8 +32,8 @@ const QuizComponent = ({ data, style }) => {
   return (
     <View style={[s.container, style]}>
       <ToastAlert message={toast} />
-      <Text style={{ fontSize: 15 }}>🥳 깜짝퀴즈 !</Text>
-      <Text style={s.quiz}>{data.quiz.question}</Text>
+      <Text style={{ fontSize: 15, color: 'white' }}>🥳 깜짝퀴즈 !</Text>
+      <Text style={s.quiz}>{data.quiz}</Text>
 
       <View style={s.btnwrap}>
         <TouchableOpacity
@@ -51,7 +51,7 @@ const QuizComponent = ({ data, style }) => {
               textAlign: 'center',
               fontWeight: 'bold',
               fontSize: 20,
-              color: disabled && data.quiz.answer !== 'NO' ? '#222' : '#111',
+              color: disabled && data.answer !== 'NO' ? '#222' : '#111',
             }}
           >
             아니예요
@@ -60,7 +60,7 @@ const QuizComponent = ({ data, style }) => {
         <TouchableOpacity
           style={[
             s.btn,
-            disabled && data.quiz.answer !== 'YES'
+            disabled && data.answer !== 'YES'
               ? { backgroundColor: '#fff' }
               : { backgroundColor: colors.green600 },
           ]}
@@ -72,7 +72,7 @@ const QuizComponent = ({ data, style }) => {
               textAlign: 'center',
               fontWeight: 'bold',
               fontSize: 20,
-              color: disabled && data.quiz.answer !== 'YES' ? '#222' : '#111',
+              color: disabled && data.answer !== 'YES' ? '#222' : '#111',
             }}
           >
             맞아요
@@ -95,12 +95,14 @@ const s = StyleSheet.create({
     marginTop: -100,
   },
   quiz: {
+    color: 'white',
     width: '90%',
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 30,
+    lineHeight: 30,
   },
   btnwrap: {
     flexDirection: 'row',

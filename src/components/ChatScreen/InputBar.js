@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Animated,
 } from 'react-native';
 import colors from '../../styles/colors';
 
@@ -16,6 +17,21 @@ export default function InputBar({
   recommendedQuestions,
 }) {
   const [showQuestions, setShowQuestions] = React.useState(false);
+
+  const animatedHeight = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.timing(animatedHeight, {
+      toValue: showQuestions ? 1 : 0,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [showQuestions]);
+
+  const questionsHeight = animatedHeight.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 60], // 60은 추천 질문 영역의 최대 높이(px)로 조정 가능
+  });
 
   return (
     <View style={s.container}>
@@ -34,30 +50,38 @@ export default function InputBar({
           tintColor="#fff"
         />
       </TouchableOpacity>
-      {showQuestions && (
-        <View
-          style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 10 }}
-        >
-          {recommendedQuestions?.map((q, idx) => (
-            <TouchableOpacity
-              key={idx}
-              style={{
-                backgroundColor: '#fff',
-                borderRadius: 16,
-                paddingHorizontal: 14,
-                paddingVertical: 8,
-                marginRight: 8,
-                marginBottom: 8,
-                opacity: 0.8,
-              }}
-              onPress={() => onChangeText(q)}
-              activeOpacity={0.8}
-            >
-              <Text style={{ color: '#222', fontSize: 14 }}>{q}</Text>
-            </TouchableOpacity>
-          ))}
+      <Animated.View
+        style={{
+          overflow: 'hidden',
+          height: questionsHeight,
+          marginBottom: animatedHeight.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 10],
+          }),
+        }}
+      >
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {showQuestions &&
+            recommendedQuestions?.map((q, idx) => (
+              <TouchableOpacity
+                key={idx}
+                style={{
+                  backgroundColor: '#fff',
+                  borderRadius: 16,
+                  paddingHorizontal: 14,
+                  paddingVertical: 8,
+                  marginRight: 8,
+                  marginBottom: 8,
+                  opacity: 0.8,
+                }}
+                onPress={() => onChangeText(q)}
+                activeOpacity={0.8}
+              >
+                <Text style={{ color: '#222', fontSize: 14 }}>{q}</Text>
+              </TouchableOpacity>
+            ))}
         </View>
-      )}
+      </Animated.View>
       <View style={s.inputwrapper}>
         <View style={s.inputbar}>
           <TextInput
