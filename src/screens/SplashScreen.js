@@ -1,3 +1,4 @@
+// src/screens/SplashScreen.js
 import React, { useEffect } from 'react';
 import {
   SafeAreaView,
@@ -5,16 +6,19 @@ import {
   StyleSheet,
   ImageBackground,
   StatusBar,
+  View,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function SplashScreen({ navigation }) {
+export default function SplashScreen() {
+  const navigation = useNavigation();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      //navigation.replace('LoginScreen'); // 2초 뒤 로그인 화면으로 이동
-      navigation.replace('CardScreen'); // 2초 뒤 로그인 화면으로 이동
+    const t = setTimeout(() => {
+      navigation.replace('LoginScreen'); // ✅ 2초 뒤 로그인 화면으로 이동
     }, 2000);
 
-    return () => clearTimeout(timer); // cleanup
+    return () => clearTimeout(t);
   }, [navigation]);
 
   return (
@@ -25,8 +29,12 @@ export default function SplashScreen({ navigation }) {
     >
       <SafeAreaView style={s.wrap}>
         <StatusBar barStyle="light-content" />
-        <Text style={s.title}>OHNEW</Text>
-        <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+
+        {/* 중앙 타이틀 */}
+        <View style={s.center}>
+          <Text style={s.title}>OHNEW</Text>
+          <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -34,7 +42,12 @@ export default function SplashScreen({ navigation }) {
 
 const s = StyleSheet.create({
   bg: { flex: 1 },
-  wrap: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  wrap: { flex: 1 },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 40,
     fontWeight: '900',
