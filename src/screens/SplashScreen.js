@@ -38,7 +38,7 @@ const s = StyleSheet.create({
   title: {
     fontSize: 40,
     fontWeight: '900',
-    color: '#111827',
+    color: '#E1F738',
     marginBottom: 12,
   },
   subtitle: {
