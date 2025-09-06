@@ -66,9 +66,9 @@ export default function HomeScreen({ navigation, onPressCard }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <SafeAreaView style={{ flex: 1 }} edges={['top','bottom']}>
+      <SafeAreaView style={{ flex: 1 , backgroundColor:'pink'}} edges={['top','bottom']}>
         <ImageBackground
-          source={require('../assets/images/Common/background.png')}
+          // source={require('../assets/images/Common/background.png')}
           resizeMode="cover"
           style={{ flex: 1 }}
         >
@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation, onPressCard }) {
               <View style={s.headerBlock}>
                 <Image source={require('../assets/images/HomeScreen/Icon_gbnam.jpg')} style={s.avatarImg} />
                 <Text style={s.helloTitle}>
-                  기범님 반가워요 👋🏻{'\n'}
+                  기범님  👋🏻{'\n'}
                   오늘 준비 된 뉴스가 {cards.length}개 있어요
                 </Text>
               </View>
