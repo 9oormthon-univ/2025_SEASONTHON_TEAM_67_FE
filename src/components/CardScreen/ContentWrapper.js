@@ -38,17 +38,7 @@ const ContentWrapper = ({
   }, [RenderComponent]);
   return (
     <View style={[container, { flex: 1 }]}>
-      {showArrow && (
-        <TouchableOpacity
-          style={[styles.btn, { top: insets.top, zIndex: 2 }]}
-          onPress={handleGoHome}
-        >
-          <Image
-            source={require('../../assets/images/Common/arrow.png')}
-            style={styles.img}
-          />
-        </TouchableOpacity>
-      )}
+
       {/* <ImageBackground
         source={require('../../assets/images/Common/background.png')}
         style={s.flexContainer}

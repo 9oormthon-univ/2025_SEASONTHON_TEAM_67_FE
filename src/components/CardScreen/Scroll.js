@@ -5,14 +5,24 @@ import React, {
   useMemo,
   useEffect,
 } from 'react';
-import { useSafeAreaFrame } from 'react-native-safe-area-context';
-import { StyleSheet, Animated, View } from 'react-native';
+import {
+  useSafeAreaInsets,
+  useSafeAreaFrame,
+} from 'react-native-safe-area-context';
+import {
+  StyleSheet,
+  Animated,
+  View,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
 import ContentComponent from './ContentWrapper';
 import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
+import BackArrow from '../back_arrow'; // 추가
 
 const GradientFooter = ({ isHome }) => {
   const animatedValue = useRef(new Animated.Value(isHome ? 1 : 0)).current;
@@ -62,57 +72,19 @@ const GradientFooter = ({ isHome }) => {
   );
 };
 
+// scroll
 const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
+  const [isHome, setIsHome] = useState(true);
+  const [prevIsHome, setPrevIsHome] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
-  const [isHome, setIsHome] = useState(true); // 현재 보여지는 아이템이 home인지 체크
   const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const arrowAnim = useRef(new Animated.Value(0)).current; // 0: 안보임, 1: 보임
   const refFlatList = useRef(null);
-
+  const insets = useSafeAreaInsets();
   const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
-
-  const onViewableItemsChanged = useCallback(
-    ({ changed }) => {
-      if (changed.length > 0) {
-        setScrollInfo({
-          isViewable: changed[0].isViewable,
-          index: changed[0].index,
-        });
-        // home 여부 판단
-        setIsHome(flatListData[changed[0].index]?.type === 'home');
-      }
-    },
-    [flatListData],
-  );
-
-  const getItemLayout = useCallback(
-    (_, index) => ({
-      length: height,
-      offset: height * index,
-      index,
-    }),
-    [height],
-  );
-
-  const keyExtractor = useCallback(
-    (item, idx) => `${item.id || 'home'}_${item.type || 'home'}_${idx}`,
-    [],
-  );
-
-  // 스크롤 위치에 따라 isScrolled 상태 변경
-  const onScroll = useCallback(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true,
-      listener: event => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        setIsScrolled(offsetY > 10); // 10px 이상 스크롤 시 true
-      },
-    }),
-    [],
-  );
-  // scroll data 출력
-  console.log('Scroll data:', data);
 
   // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
   const flatListData = useMemo(() => {
@@ -133,58 +105,123 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
     return result;
   }, [data]);
 
-  console.log('flatListData:', flatListData);
+  // 스크롤 위치에 따라 isScrolled 상태 변경
+  const onScroll = useCallback(
+    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+      useNativeDriver: true,
+      listener: event => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        // FlatList의 높이로 현재 index 추정
+        const idx = Math.round(offsetY / height);
+        // flatListData[idx]가 home인지 체크
+        if (flatListData[idx]?.type === 'home') {
+          setIsHome(true);
+        } else {
+          setIsHome(false);
+        }
+      },
+    }),
+    [flatListData, height],
+  );
+
+  const getItemLayout = useCallback(
+    (_, index) => ({
+      length: height,
+      offset: height * index,
+      index,
+    }),
+    [height],
+  );
+
+  const keyExtractor = useCallback(
+    (item, idx) => `${item.id || 'home'}_${item.type || 'home'}_${idx}`,
+    [],
+  );
+
+  // home 여부 추적
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }) => {
+      if (viewableItems && viewableItems.length > 0) {
+        setPrevIsHome(isHome);
+        setIsHome(viewableItems[0].item.type === 'home');
+        setCurrentIndex(viewableItems[0].index ?? 0);
+      }
+    },
+    [isHome],
+  );
+
+  const handleGoHome = useCallback(() => {
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollToIndex({ index: 0, animated: true });
+    }
+  }, [scrollRef]);
+
   const renderItem = useCallback(
     ({ item }) => {
-      if (item.type === 'home') {
-        return (
-          <HomeScreen
-            key={`home_${item.id}`} // key 추가(필수는 아니지만 안전)
-            navigation={navigation}
-            onPressCard={itemId => {
-              const idx = flatListData.findIndex(
-                d => d.id === itemId && d.type !== 'home',
-              );
-              if (scrollRef && scrollRef.current && idx >= 0) {
-                scrollRef.current.scrollToIndex({ index: idx, animated: true });
-              }
-            }}
-          />
-        );
-      }
-      if (item.type === 'quiz') {
-        return (
-          <ContentComponent
-            data={item}
-            RenderComponent={QuizComponent}
-            navigation={navigation}
-            scrollRef={scrollRef}
-          />
-        );
-      }
       return (
-        <ContentComponent
-          data={item}
-          RenderComponent={NewsComponent}
-          navigation={navigation}
-          scrollRef={scrollRef}
-        />
+        <View style={{ flex: 1 }}>
+          {item.type === 'quiz' ? (
+            <ContentComponent
+              data={item}
+              RenderComponent={QuizComponent}
+              navigation={navigation}
+              scrollRef={scrollRef}
+            />
+          ) : item.type === 'news' ? (
+            <ContentComponent
+              data={item}
+              RenderComponent={NewsComponent}
+              navigation={navigation}
+              scrollRef={scrollRef}
+            />
+          ) : (
+            <HomeScreen
+              key={`home_${item.id}`}
+              navigation={navigation}
+              onPressCard={itemId => {
+                const idx = flatListData.findIndex(
+                  d => d.id === itemId && d.type !== 'home',
+                );
+                if (scrollRef && scrollRef.current && idx >= 0) {
+                  scrollRef.current.scrollToIndex({
+                    index: idx,
+                    animated: true,
+                  });
+                }
+              }}
+            />
+          )}
+        </View>
       );
     },
-    [navigation, scrollRef, flatListData],
+    [navigation, scrollRef, flatListData, isHome, prevIsHome, handleGoHome],
   );
+
+  // currentIndex가 바뀔 때마다 애니메이션
+  useEffect(() => {
+    Animated.timing(arrowAnim, {
+      toValue: currentIndex >= 1 ? 1 : 0,
+      duration: 200, // 나타나는 속도(ms) 조절
+      useNativeDriver: true,
+    }).start();
+  }, [currentIndex, arrowAnim]);
 
   // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
+      <Animated.View pointerEvents={currentIndex >= 1 ? 'auto' : 'none'}>
+        <BackArrow onPress={handleGoHome} />
+      </Animated.View>
+
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}
         ref={scrollRef}
         automaticallyAdjustContentInsets
         onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
+        viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}
         onScroll={onScroll}
+        scrollEventThrottle={5}
         data={flatListData}
         renderItem={renderItem}
         getItemLayout={getItemLayout}
@@ -194,12 +231,13 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
         removeClippedSubviews={false}
         bounces={false}
       />
-      <GradientFooter isHome={!isScrolled} />
+      <GradientFooter isHome={isHome} />
     </View>
   );
 };
 
 export default Scroll;
+
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
   footer: {
@@ -208,5 +246,18 @@ const s = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 200,
+  },
+  btn: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    zIndex: 100,
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+  },
+  img: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
 });

@@ -88,7 +88,7 @@ export default function LoginScreen({ navigation }) {
               />
 
               {/* 에러 */}
-              {!!error && <Text style={s.errorText}>{error}</Text>}
+              {error && <Text style={s.errorText}>{error}</Text>}
 
               <TouchableOpacity
                 activeOpacity={0.85}
