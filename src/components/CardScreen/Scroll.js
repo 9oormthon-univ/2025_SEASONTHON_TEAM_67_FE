@@ -207,8 +207,11 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
   // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
-      <BackArrow style={{ zIndex: 0 }} />
-      <BackArrow style={{ zIndex: 100, opacity: 0 }} onPress={handleGoHome} />
+      <View pointerEvents={isHome ? 'none' : 'auto'}>
+        <BackArrow style={{ zIndex: 0 }} />
+        <BackArrow style={{ zIndex: 100, opacity: 0 }} onPress={handleGoHome} />
+      </View>
+
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}

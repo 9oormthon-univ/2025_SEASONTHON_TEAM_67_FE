@@ -11,6 +11,7 @@ export default function BackArrow({ onPress, style, imgStyle }) {
         style,
       ]}
       onPress={onPress}
+      activeOpacity={0}
     >
       <Image
         source={require('../assets/images/Common/arrow.png')}
