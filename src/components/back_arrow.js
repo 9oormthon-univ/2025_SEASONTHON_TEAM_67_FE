@@ -7,26 +7,20 @@ export default function BackArrow({ onPress, style, imgStyle }) {
   return (
     <TouchableOpacity
       style={[
-        styles.btn,
-        { top: insets.top + 20 }, // SafeArea top 적용
+        { position: 'absolute', left: 15, top: insets.top + 20, zIndex: 1 },
         style,
       ]}
       onPress={onPress}
     >
       <Image
         source={require('../assets/images/Common/arrow.png')}
-        style={[styles.img, { transform: [{ rotate: '90deg' }] }, imgStyle]}
+        style={[styles.img, imgStyle]}
       />
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  btn: {
-    position: 'absolute',
-    left: 20,
-    zIndex: 10,
-  },
   img: {
     width: 20,
     height: 20,

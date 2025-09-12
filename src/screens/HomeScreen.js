@@ -33,7 +33,7 @@ export default function HomeScreen({ onPressCard }) {
   const safeHeight = frame.height - insets.top - insets.bottom;
   const newsStyle = useMemo(
     () => ({ width: '100%', height: safeHeight }),
-    [safeHeight]
+    [safeHeight],
   );
 
   // ---- 데이터 로드 ----
@@ -51,10 +51,12 @@ export default function HomeScreen({ onPressCard }) {
         if (!alive) return;
 
         if (!Array.isArray(result)) {
-          throw new Error('서버 응답 형식이 올바르지 않습니다.(result 배열 아님)');
+          throw new Error(
+            '서버 응답 형식이 올바르지 않습니다.(result 배열 아님)',
+          );
         }
 
-        const mapped = result.map((n) => ({
+        const mapped = result.map(n => ({
           id: String(n.newsId),
           title: n.title ?? '',
           summary: n.summary ?? '',
@@ -93,7 +95,11 @@ export default function HomeScreen({ onPressCard }) {
       />
 
       <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
-        <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
 
         <View style={[s.body, newsStyle]}>
           {/* 상단 바: 왼쪽 로고 + 오른쪽 버튼 */}
@@ -147,7 +153,7 @@ export default function HomeScreen({ onPressCard }) {
             ) : (
               <Cardnews
                 data={cards}
-                onPressItem={(item) => {
+                onPressItem={item => {
                   if (onPressCard) onPressCard(item.id);
                   else nav.navigate('CardScreen', { itemId: item.id });
                 }}

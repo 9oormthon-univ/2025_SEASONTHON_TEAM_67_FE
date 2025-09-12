@@ -158,61 +158,57 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
 
   const renderItem = useCallback(
     ({ item }) => {
-      return (
-        <View style={{ flex: 1 }}>
-          {item.type === 'quiz' ? (
+      if (item.type === 'quiz') {
+        return (
+          <View style={{ flex: 1 }}>
             <ContentComponent
               data={item}
               RenderComponent={QuizComponent}
               navigation={navigation}
               scrollRef={scrollRef}
             />
-          ) : item.type === 'news' ? (
+          </View>
+        );
+      }
+      if (item.type === 'news') {
+        return (
+          <View style={{ flex: 1 }}>
             <ContentComponent
               data={item}
               RenderComponent={NewsComponent}
               navigation={navigation}
               scrollRef={scrollRef}
             />
-          ) : (
-            <HomeScreen
-              key={`home_${item.id}`}
-              navigation={navigation}
-              onPressCard={itemId => {
-                const idx = flatListData.findIndex(
-                  d => d.id === itemId && d.type !== 'home',
-                );
-                if (scrollRef && scrollRef.current && idx >= 0) {
-                  scrollRef.current.scrollToIndex({
-                    index: idx,
-                    animated: true,
-                  });
-                }
-              }}
-            />
-          )}
-        </View>
+          </View>
+        );
+      }
+      // HomeScreen만 zIndex: 10 적용
+      return (
+        <HomeScreen
+          key={`home_${item.id}`}
+          navigation={navigation}
+          onPressCard={itemId => {
+            const idx = flatListData.findIndex(
+              d => d.id === itemId && d.type !== 'home',
+            );
+            if (scrollRef && scrollRef.current && idx >= 0) {
+              scrollRef.current.scrollToIndex({
+                index: idx,
+                animated: true,
+              });
+            }
+          }}
+        />
       );
     },
     [navigation, scrollRef, flatListData, isHome, prevIsHome, handleGoHome],
   );
 
-  // currentIndex가 바뀔 때마다 애니메이션
-  useEffect(() => {
-    Animated.timing(arrowAnim, {
-      toValue: currentIndex >= 1 ? 1 : 0,
-      duration: 200, // 나타나는 속도(ms) 조절
-      useNativeDriver: true,
-    }).start();
-  }, [currentIndex, arrowAnim]);
-
   // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
-      <Animated.View pointerEvents={currentIndex >= 1 ? 'auto' : 'none'}>
-        <BackArrow onPress={handleGoHome} />
-      </Animated.View>
-
+      <BackArrow style={{ zIndex: 0 }} />
+      <BackArrow style={{ zIndex: 100, opacity: 0 }} onPress={handleGoHome} />
       <Animated.FlatList
         pagingEnabled
         showsVerticalScrollIndicator={false}
@@ -246,18 +242,5 @@ const s = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: 200,
-  },
-  btn: {
-    position: 'absolute',
-    top: 20,
-    left: 0,
-    zIndex: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-  },
-  img: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
   },
 });

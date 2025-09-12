@@ -11,20 +11,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Scroll from '../components/CardScreen/Scroll';
 import { apiFetch } from '../components/Common/apiClient'; // ✅ apiFetch 사용
 
-const GradientFooter = () => {
-  return (
-    <>
-      <LinearGradient
-        colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={s.footer}
-        pointerEvents="none"
-      />
-    </>
-  );
-};
-
 export default function CardScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const [currentType, setCurrentType] = useState(null);
@@ -82,13 +68,6 @@ export default function CardScreen({ navigation }) {
 
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 200,
-  },
   btn: {
     position: 'absolute',
     top: 0,
