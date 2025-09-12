@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 const NewsComponent = ({
   data,
@@ -60,7 +60,7 @@ const NewsComponent = ({
         </Text>
       )}
       {fields.includes('description') && (
-        <Text style={{ fontSize: 16, marginTop: 30, color }}>
+        <Text style={{ fontSize: 16, marginTop: 30, lineHeight: 28, color }}>
           {sentences.map((sentence, idx) => (
             <Text key={idx} style={{ color, fontSize: 16 }}>
               {sentence}

@@ -45,17 +45,10 @@ export default function CardScreen({ navigation }) {
         <View
           style={{
             ...StyleSheet.absoluteFillObject,
-            backgroundColor: 'transparent',
+            backgroundColor: 'rgba(61, 49, 158, 0.25)',
           }}
           pointerEvents="none"
-        >
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(61, 49, 158, 0.25)',
-            }}
-          />
-        </View>
+        />
         <Scroll
           data={data}
           onTypeChange={setCurrentType}
@@ -68,17 +61,4 @@ export default function CardScreen({ navigation }) {
 
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
-  btn: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-  },
-  img: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
-  },
 });

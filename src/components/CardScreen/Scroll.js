@@ -30,7 +30,7 @@ const GradientFooter = ({ isHome }) => {
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: isHome ? 1 : 0,
-      duration: 700,
+      duration: 1000,
       useNativeDriver: false,
     }).start();
   }, [isHome, animatedValue]);
@@ -73,18 +73,11 @@ const GradientFooter = ({ isHome }) => {
 };
 
 // scroll
-const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
+const Scroll = ({ data, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
   const [isHome, setIsHome] = useState(true);
   const [prevIsHome, setPrevIsHome] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
-  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const arrowAnim = useRef(new Animated.Value(0)).current; // 0: 안보임, 1: 보임
-  const refFlatList = useRef(null);
-  const insets = useSafeAreaInsets();
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
 
   // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
   const flatListData = useMemo(() => {
@@ -144,7 +137,6 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
       if (viewableItems && viewableItems.length > 0) {
         setPrevIsHome(isHome);
         setIsHome(viewableItems[0].item.type === 'home');
-        setCurrentIndex(viewableItems[0].index ?? 0);
       }
     },
     [isHome],

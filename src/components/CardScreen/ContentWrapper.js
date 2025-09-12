@@ -38,7 +38,6 @@ const ContentWrapper = ({
   }, [RenderComponent]);
   return (
     <View style={[container, { flex: 1 }]}>
-
       {/* <ImageBackground
         source={require('../../assets/images/Common/background.png')}
         style={s.flexContainer}
@@ -80,7 +79,8 @@ const styles = StyleSheet.create({
   container: safeHeight => ({
     width: '100%',
     height: Platform.OS === 'ios' ? safeHeight : safeHeight,
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 14,
   }),
   footer: {
     position: 'absolute',

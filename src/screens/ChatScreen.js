@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NewsComponent from '../components/CardScreen/NewsComponent';
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
+import BackArrow from '../components/back_arrow';
 
 const GradientFooter = React.memo(() => (
   <LinearGradient
@@ -76,22 +77,7 @@ export default function ChatScreen({ navigation, route }) {
               width: '100%',
               height: '100%',
             }}
-          >
-            <View
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                backgroundColor: 'transparent',
-              }}
-              pointerEvents="none"
-            >
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'rgba(30, 24, 78, 0.3)',
-                }}
-              />
-            </View>
-          </ImageBackground>
+          ></ImageBackground>
         </View>
         <SafeAreaView
           style={{
@@ -100,22 +86,14 @@ export default function ChatScreen({ navigation, route }) {
             zIndex: 2,
           }}
         >
-          <TouchableOpacity
-            style={[s.btn, { top: insets.top }]}
-            onPress={() => navigation.goBack()}
-          >
-            <Image
-              source={require('../assets/images/Common/arrow.png')}
-              style={[s.img, { tintColor: 'white' }]}
-            />
-          </TouchableOpacity>
+          <BackArrow onPress={() => navigation.goBack()} />
           <NewsComponent
             data={data}
             fields={['title', 'date']}
             style={{
-              paddingHorizontal: 20,
-              paddingVertical: 30,
-              maxHeight: 150,
+              paddingHorizontal: 10,
+              paddingVertical: 40,
+              maxHeight: 160,
             }}
             titlestyle="white"
             titleEllipsis={true}
