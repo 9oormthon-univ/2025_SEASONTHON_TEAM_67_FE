@@ -80,13 +80,16 @@ export default function ChatScreen({ navigation, route }) {
             <ChatWrapper messages={messages} />
           </SafeAreaView>
         </GradientBg>
-      ) : null}
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: showAll ? 'transparent' : 'rgba(227, 227, 227, 0.2)',
-        }}
-      />
+      ) : (
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(240, 237, 237, 0.1)',
+          }}
+          onPress={() => navigation.goBack()}
+        />
+      )}
+
       <BackArrow onPress={() => navigation.goBack()} />
       <InputBar
         value={inputValue}

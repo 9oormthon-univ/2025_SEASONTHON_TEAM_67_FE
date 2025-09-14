@@ -9,12 +9,14 @@ import {
   Animated,
 } from 'react-native';
 import colors from '../../styles/colors';
+import LinearGradient from 'react-native-linear-gradient';
 
 export default function InputBar({
   value,
   onChangeText,
   onSend,
   recommendedQuestions,
+  gradientTop = -100,
 }) {
   const [showQuestions, setShowQuestions] = React.useState(false);
 
@@ -30,11 +32,46 @@ export default function InputBar({
 
   const questionsHeight = animatedHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 60], // 60은 추천 질문 영역의 최대 높이(px)로 조정 가능
+    outputRange: [0, 140],
   });
+
+  // opacity 애니메이션 값 (초기값 0)
+  const gradientOpacity = React.useRef(new Animated.Value(0)).current;
+
+  // 마운트 시 0→1로 서서히 진해짐
+  React.useEffect(() => {
+    Animated.timing(gradientOpacity, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: false,
+    }).start();
+
+    // 언마운트 시 1→0으로 서서히 사라짐
+    return () => {
+      Animated.timing(gradientOpacity, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: false,
+      }).start();
+    };
+  }, []);
 
   return (
     <View style={s.container}>
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          { top: gradientTop, opacity: gradientOpacity },
+        ]}
+        pointerEvents="none"
+      >
+        <LinearGradient
+          colors={['rgba(0,0,0,0)', '#8B80D0']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
       <TouchableOpacity
         style={s.questionwapper}
         onPress={() => setShowQuestions(prev => !prev)}
@@ -109,10 +146,13 @@ const s = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 10,
+    bottom: 0,
     padding: 20,
+    paddingBottom: 30,
     backgroundColor: 'transparent',
     zIndex: 10,
+    // minHeight: 300,
+    justifyContent: 'flex-end',
   },
   questionwapper: {
     flexDirection: 'row',
