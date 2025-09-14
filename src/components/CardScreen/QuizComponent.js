@@ -84,7 +84,7 @@ const s = StyleSheet.create({
   },
   quiz: {
     color: 'white',
-    width: '90%',
+    width: '95%',
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
