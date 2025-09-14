@@ -16,6 +16,7 @@ export default function InputBar({
   onChangeText,
   onSend,
   recommendedQuestions,
+  setShowAll,
   gradientTop = -100,
 }) {
   const [showQuestions, setShowQuestions] = React.useState(false);
@@ -42,18 +43,9 @@ export default function InputBar({
   React.useEffect(() => {
     Animated.timing(gradientOpacity, {
       toValue: 1,
-      duration: 600,
+      duration: 600, // 원하는 속도로 조정
       useNativeDriver: false,
     }).start();
-
-    // 언마운트 시 1→0으로 서서히 사라짐
-    return () => {
-      Animated.timing(gradientOpacity, {
-        toValue: 0,
-        duration: 600,
-        useNativeDriver: false,
-      }).start();
-    };
   }, []);
 
   return (
@@ -129,7 +121,13 @@ export default function InputBar({
             placeholderTextColor="#888"
           />
         </View>
-        <TouchableOpacity onPress={onSend}>
+        <TouchableOpacity
+          onPress={() => {
+            onSend();
+            setShowAll && setShowAll(true);
+            setShowQuestions(false);
+          }}
+        >
           <Image
             source={require('../../assets/images/ChatScreen/arrow_circle.png')}
             style={s.arrow}
