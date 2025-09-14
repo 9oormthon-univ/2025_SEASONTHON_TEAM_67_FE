@@ -16,7 +16,6 @@ export default function CardScreen({ navigation }) {
         const { result } = await apiFetch('/api/news/today', { method: 'GET' });
         if (!alive) return;
         setData(result);
-        console.log('CardScreen data:', result);
       } catch (error) {
         console.error(error);
       }

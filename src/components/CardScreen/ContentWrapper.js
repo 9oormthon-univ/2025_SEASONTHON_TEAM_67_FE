@@ -10,9 +10,6 @@ const ContentWrapper = ({ data, RenderComponent }) => {
   const safeHeight = frame.height;
   const container = useMemo(() => styles.container(safeHeight), [safeHeight]);
 
-  React.useEffect(() => {
-    console.log('ContentWrapper RenderComponent:', RenderComponent);
-  }, [RenderComponent]);
   return (
     <View style={[container, { flex: 1 }]}>
       <SafeAreaView style={{ flex: 1 }}>

@@ -155,8 +155,8 @@ export default function HomeScreen({ onPressCard }) {
                 <Cardnews
                   data={cards}
                   onPressItem={item => {
+                    console.log('[homescreen]item id:', item.id);
                     if (onPressCard) onPressCard(item.id);
-                    else nav.navigate('CardScreen', { itemId: item.id });
                   }}
                 />
               )}

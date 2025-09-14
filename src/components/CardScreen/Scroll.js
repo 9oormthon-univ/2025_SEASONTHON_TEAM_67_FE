@@ -25,9 +25,22 @@ const Scroll = ({ data, scrollRef, navigation }) => {
 
     data.forEach(item => {
       if (item) {
-        result.push({ ...item, type: 'news', id: item.id });
+        // news 아이템
+        const newsId = `${item.newsId ?? item.id}`;
+        result.push({
+          ...item,
+          type: 'news',
+          id: newsId,
+        });
+        // quiz 아이템 (랜덤)
         if (Math.random() < 0.5) {
-          result.push({ ...item, type: 'quiz', id: item.id });
+          const quizId = `quiz_${item.newsId ?? item.id}`;
+
+          result.push({
+            ...item,
+            type: 'quiz',
+            id: quizId,
+          });
         }
       }
     });
@@ -115,9 +128,11 @@ const Scroll = ({ data, scrollRef, navigation }) => {
           key={`home_${item.id}`}
           navigation={navigation}
           onPressCard={itemId => {
+            // flatListData에서 해당 id의 첫 번째 news/quiz index 찾기
             const idx = flatListData.findIndex(
-              d => d.id === itemId && d.type !== 'home',
+              d => d.id === itemId && d.type == 'news',
             );
+            console.log('Scroll: home card pressed, idx:', idx);
             if (scrollRef && scrollRef.current && idx >= 0) {
               scrollRef.current.scrollToIndex({
                 index: idx,

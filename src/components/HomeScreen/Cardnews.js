@@ -53,7 +53,7 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
       ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
       snapToAlignment="start"
       decelerationRate="fast"
-      snapToInterval={260 + 12} // 카드 너비 + 간격
+      snapToInterval={260 + 50} // 카드 너비 + 간격
     />
   );
 }
@@ -65,19 +65,21 @@ const cs = StyleSheet.create({
   },
   cardWrap: {
     width: 260, // 고정 너비
-    height: 180, // 고정 높이
+    height: 204, // 고정 높이
     alignSelf: 'flex-start',
   },
   card: {
     flex: 1,
-    padding: 14,
-    borderRadius: 14,
+    padding: 18,
+    borderRadius: 20,
     backgroundColor: '#F9FAFB',
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 2,
+    gap: 8,
+    margin: 5,
   },
   title: {
     fontSize: 15,
@@ -85,19 +87,17 @@ const cs = StyleSheet.create({
     color: '#111827',
   },
   summary: {
-    marginTop: 6,
     fontSize: 13,
     lineHeight: 18,
     color: '#4B5563',
   },
   footer: {
-    marginTop: 'auto',
     alignItems: 'flex-end',
   },
   chip: {
     backgroundColor: '#E1F738',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 12,
   },
   chipText: {
