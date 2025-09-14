@@ -32,6 +32,7 @@ export default function ChatScreen({ navigation, route }) {
   const [messages, setMessages] = useState([
     { sender: 'ai', text: '이 기사에 대해 더 알아보고 싶은 내용이 있나요?' },
   ]);
+  const [showAll, setShowAll] = useState(false);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -58,33 +59,35 @@ export default function ChatScreen({ navigation, route }) {
 
   return (
     <View style={s.flexContainer}>
-      <GradientBg>
-        <SafeAreaView
-          style={{
-            flex: 1,
-            padding: 20,
-            zIndex: 2,
-          }}
-        >
-          <BackArrow onPress={() => navigation.goBack()} />
-          <NewsComponent
-            data={data}
+      {showAll ? (
+        <GradientBg>
+          <SafeAreaView
             style={{
-              paddingHorizontal: 10,
-              paddingVertical: 40,
-              maxHeight: 160,
+              flex: 1,
+              padding: 20,
+              zIndex: 2,
             }}
-            titleEllipsis={true}
-          />
-          <ChatWrapper messages={messages} />
-          <InputBar
-            value={inputValue}
-            onChangeText={setInputValue}
-            onSend={handleSend}
-            recommendedQuestions={data.recommendedQuestions}
-          />
-        </SafeAreaView>
-      </GradientBg>
+          >
+            <NewsComponent
+              data={data}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 40,
+                maxHeight: 160,
+              }}
+              titleEllipsis={true}
+            />
+            <ChatWrapper messages={messages} />
+          </SafeAreaView>
+        </GradientBg>
+      ) : null}
+      <BackArrow onPress={() => navigation.goBack()} />
+      <InputBar
+        value={inputValue}
+        onChangeText={setInputValue}
+        onSend={handleSend}
+        recommendedQuestions={data.recommendedQuestions}
+      />
     </View>
   );
 }
@@ -92,7 +95,7 @@ export default function ChatScreen({ navigation, route }) {
 const s = StyleSheet.create({
   flexContainer: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
   },
   footer: {
     position: 'absolute',
