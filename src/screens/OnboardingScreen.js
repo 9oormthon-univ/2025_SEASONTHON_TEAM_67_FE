@@ -115,14 +115,15 @@ export default function OnboardingScreen({ navigation }) {
                 </View>
 
                 <View style={styles.toneWrap}>
-                  <View style={{ width: '86%' }}>
-                    {['사회', '정치사회', '경제'].map(label => {
+                  <View style={{ width: '86%', maxWidth: 360 }}>
+                    {['사회', '정치사회', '경제'].map((label, idx) => {
                       const active = tone === label;
                       return (
                         <TouchableOpacity
                           key={label}
                           style={[
                             styles.toneItem,
+                            idx > 0 && { marginTop: 12 },
                             {
                               backgroundColor: active ? '#fff' : 'rgba(0,0,0,0.35)',
                               borderColor: active ? 'transparent' : 'rgba(255,255,255,0.25)',
@@ -214,7 +215,6 @@ const styles = StyleSheet.create({
   },
   toneWrap: {
     position: 'absolute',
-    bottom: '20%',
     width: '100%',
     alignItems: 'center',
   },
