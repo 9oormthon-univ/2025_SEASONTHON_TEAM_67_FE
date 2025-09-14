@@ -40,7 +40,7 @@ export default function LoginScreen({ navigation }) {
       await setUserInfo({ id: result?.id, email: result?.email, name: result?.name });
 
       // 이동
-      navigation.replace('CardScreen'); // 원하는 첫 화면으로
+      navigation.replace('OnboardingScreen'); // 원하는 첫 화면으로
     } catch (e) {
       setError(String(e?.message || '로그인에 실패했습니다.'));
     } finally {

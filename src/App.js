@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import SplashScreen from './screens/SplashScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import BookmarkScreen from './screens/BookmarkScreen';
@@ -23,6 +24,7 @@ export default function App() {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="BookmarkScreen" component={BookmarkScreen} />
