@@ -1,22 +1,6 @@
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
-import {
-  useSafeAreaInsets,
-  useSafeAreaFrame,
-} from 'react-native-safe-area-context';
-import {
-  StyleSheet,
-  Animated,
-  View,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
+import { useSafeAreaFrame } from 'react-native-safe-area-context';
+import { StyleSheet, Animated, View } from 'react-native';
 
 import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
@@ -24,56 +8,8 @@ import ContentComponent from './ContentWrapper';
 import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
 import BackArrow from '../Common/back_arrow';
 import GradientBg from '../Common/gradientBg';
+import GradientFooter from '../Common/GradientFooter';
 
-const GradientFooter = ({ isHome }) => {
-  const animatedValue = useRef(new Animated.Value(isHome ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isHome ? 1 : 0,
-      duration: 800,
-      useNativeDriver: false,
-    }).start();
-  }, [isHome, animatedValue]);
-
-  // 두 개의 Animated.View + LinearGradient를 겹치고 opacity로 cross-fade
-  const homeOpacity = animatedValue;
-  const normalOpacity = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-
-  return (
-    <View style={s.footer}>
-      <Animated.View
-        style={[StyleSheet.absoluteFill, { opacity: normalOpacity }]}
-        pointerEvents="none"
-      >
-        <LinearGradient
-          colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-      </Animated.View>
-      <Animated.View
-        style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]}
-        pointerEvents="none"
-      >
-        <LinearGradient
-          colors={['rgba(186,227,252,0.0)', 'rgba(83, 172, 227, 0.5)']}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-      </Animated.View>
-    </View>
-  );
-};
-
-// scroll
 const Scroll = ({ data, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
   const [isHome, setIsHome] = useState(true);
