@@ -56,4 +56,8 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
+  headerBlock: {
+    alignItems: 'center',
+    marginBottom: 26,
+  },
 });

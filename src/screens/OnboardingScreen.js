@@ -35,12 +35,8 @@ export default function OnboardingScreen({ navigation }) {
       [ALL_TOPICS, moreTopics],
   );
 
-  const progress = useMemo(() => {
-    if (step === 1) return 0.25;
-    if (step === 2) return 0.5;
-    if (step === 3) return 0.75;
-    return 1;
-  }, [step]);
+  // 3단계 진행도 - 4번째(완료) 화면은 바 숨김
+  const currentStepForBar = step > 3 ? 3 : step; // 1..3
 
   const toggle = (selected, setter) => (label) => {
     if (selected.includes(label)) {
@@ -61,7 +57,7 @@ export default function OnboardingScreen({ navigation }) {
       >
         <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
           <StatusBar barStyle="light-content" />
-          <ProgressBar progress={progress} />
+          {step <= 3 && <ProgressBar current={currentStepForBar} total={3} />}
 
           <ScrollView
               contentContainerStyle={styles.centerBlock}
@@ -69,67 +65,80 @@ export default function OnboardingScreen({ navigation }) {
           >
             {step === 1 && (
                 <>
-                  <Text style={styles.title}>
-                    자주 보고 싶은 주제를{'\n'}선택해주세요
-                  </Text>
-                  <Text style={styles.desc}>
-                    선택한 주제를 더 자주 보여드릴게요
-                  </Text>
-                  <ChoiceChips
-                      options={step1Options}
-                      selected={moreTopics}
-                      onToggle={toggle(moreTopics, setMoreTopics)}
-                      accent="#E1F738"
-                  />
+                  <View style={[styles.headerBlock, {position: 'absolute', top: '20%'}]}>
+                    <Text style={styles.title}>
+                      자주 보고 싶은 주제를{'\n'}선택해주세요
+                    </Text>
+                    <Text style={styles.desc}>
+                      선택한 주제를 더 자주 보여드릴게요
+                    </Text>
+                  </View>
+                  <View style={styles.chipsBlock}>
+                    <ChoiceChips
+                        options={step1Options}
+                        selected={moreTopics}
+                        onToggle={toggle(moreTopics, setMoreTopics)}
+                        accent="#E1F738"
+                    />
+                  </View>
                 </>
             )}
 
             {step === 2 && (
                 <>
-                  <Text style={styles.title}>
-                    적게 보고 싶은 주제를{'\n'}선택해주세요
-                  </Text>
-                  <Text style={styles.desc}>
-                    선택한 주제는 더 적게 보여드릴게요
-                  </Text>
-                  <ChoiceChips
-                      options={step2Options}
-                      selected={lessTopics}
-                      onToggle={toggle(lessTopics, setLessTopics)}
-                      accent="#FFC891"
-                  />
+                  <View style={[styles.headerBlock, {position: 'absolute', top: '20%'}]}>
+                    <Text style={styles.title}>
+                      적게 보고 싶은 주제를{'\n'}선택해주세요
+                    </Text>
+                    <Text style={styles.desc}>
+                      선택한 주제는 더 적게 보여드릴게요
+                    </Text>
+                  </View>
+                  <View style={styles.chipsBlock}>
+                    <ChoiceChips
+                        options={step2Options}
+                        selected={lessTopics}
+                        onToggle={toggle(lessTopics, setLessTopics)}
+                        accent="#FFC891"
+                    />
+                  </View>
                 </>
             )}
 
             {step === 3 && (
-                <>
+              <>
+                <View style={[styles.headerBlock, {position: 'absolute', top: '20%'}]}>
                   <Text style={styles.title}>
                     어떤 문체로 뉴스를{'\n'}보여드릴까요?
                   </Text>
                   <Text style={styles.desc}>원하는 톤을 선택해주세요</Text>
-                  <View style={styles.toneWrap}>
+                </View>
+
+                <View style={styles.toneWrap}>
+                  <View style={{ width: '86%' }}>
                     {['사회', '정치사회', '경제'].map(label => {
                       const active = tone === label;
                       return (
-                          <TouchableOpacity
-                              key={label}
-                              style={[
-                                styles.toneItem,
-                                {
-                                  backgroundColor: active ? '#fff' : 'rgba(0,0,0,0.35)',
-                                  borderColor: active ? 'transparent' : 'rgba(255,255,255,0.25)',
-                                },
-                              ]}
-                              onPress={() => setTone(label)}
-                          >
-                            <Text style={[styles.toneLabel, { color: active ? '#111' : '#fff' }]}>
-                              {label}
-                            </Text>
-                          </TouchableOpacity>
+                        <TouchableOpacity
+                          key={label}
+                          style={[
+                            styles.toneItem,
+                            {
+                              backgroundColor: active ? '#fff' : 'rgba(0,0,0,0.35)',
+                              borderColor: active ? 'transparent' : 'rgba(255,255,255,0.25)',
+                            },
+                          ]}
+                          onPress={() => setTone(label)}
+                        >
+                          <Text style={[styles.toneLabel, { color: active ? '#111' : '#fff' }]}>
+                            {label}
+                          </Text>
+                        </TouchableOpacity>
                       );
                     })}
                   </View>
-                </>
+                </View>
+              </>
             )}
 
             {step === 4 && (
@@ -142,7 +151,7 @@ export default function OnboardingScreen({ navigation }) {
 
           {/* 하단 버튼 */}
           <View style={styles.footer}>
-            {step !== 1 && (
+            {step !== 1 && step !== 4 && (
                 <TouchableOpacity
                     onPress={goPrev}
                     style={styles.prevBtn}
@@ -158,7 +167,7 @@ export default function OnboardingScreen({ navigation }) {
                 }}
                 style={[
                   styles.nextBtn,
-                  step === 1 && { flex: 1, marginLeft: 0 }, // ✅ 첫화면: 전체 차지
+                  (step === 1 || step === 4) && { flex: 1, marginLeft: 0, width: '100%' },
                 ]}
             >
               <Text style={styles.nextText}>
@@ -180,25 +189,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 24,
   },
+  headerBlock: {
+    alignItems: 'center',
+    marginTop: -40,
+  },
+  chipsBlock: {
+    position: 'absolute',
+    //bottom: '20%',
+    width: '100%',
+    alignItems: 'center',
+  },
   title: {
     color: '#fff',
     fontSize: 24,
     fontWeight: '800',
     textAlign: 'center',
     lineHeight: 30,
-    marginBottom: 10,
   },
   desc: {
     color: 'rgba(255,255,255,0.88)',
     fontSize: 15,
     textAlign: 'center',
-    marginTop: 4,
-    marginBottom: 26,
+    marginTop: 16,
   },
   toneWrap: {
-    width: '86%',
-    gap: 14,
-    marginTop: 4,
+    position: 'absolute',
+    bottom: '20%',
+    width: '100%',
+    alignItems: 'center',
   },
   toneItem: {
     height: 54,
@@ -213,7 +231,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 22,
     paddingBottom: 24,
   },
