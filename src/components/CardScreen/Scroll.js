@@ -22,7 +22,8 @@ import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
 import ContentComponent from './ContentWrapper';
 import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
-import BackArrow from '../back_arrow'; // 추가
+import BackArrow from '../Common/back_arrow';
+import GradientBg from '../Common/gradientBg';
 
 const GradientFooter = ({ isHome }) => {
   const animatedValue = useRef(new Animated.Value(isHome ? 1 : 0)).current;
@@ -30,7 +31,7 @@ const GradientFooter = ({ isHome }) => {
   useEffect(() => {
     Animated.timing(animatedValue, {
       toValue: isHome ? 1 : 0,
-      duration: 1000,
+      duration: 800,
       useNativeDriver: false,
     }).start();
   }, [isHome, animatedValue]);
@@ -61,7 +62,7 @@ const GradientFooter = ({ isHome }) => {
         pointerEvents="none"
       >
         <LinearGradient
-          colors={['rgba(186,227,252,0.0)', 'rgba(135,206,250,0.2)']}
+          colors={['rgba(186,227,252,0.0)', 'rgba(83, 172, 227, 0.5)']}
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={StyleSheet.absoluteFill}
@@ -174,7 +175,6 @@ const Scroll = ({ data, scrollRef, navigation }) => {
           </View>
         );
       }
-      // HomeScreen만 zIndex: 10 적용
       return (
         <HomeScreen
           key={`home_${item.id}`}
@@ -199,30 +199,35 @@ const Scroll = ({ data, scrollRef, navigation }) => {
   // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
-      <View pointerEvents={isHome ? 'none' : 'auto'}>
-        <BackArrow style={{ zIndex: 0 }} />
-        <BackArrow style={{ zIndex: 100, opacity: 0 }} onPress={handleGoHome} />
-      </View>
+      <GradientBg overlayOpacity={50}>
+        <View pointerEvents={isHome ? 'none' : 'auto'}>
+          <BackArrow style={{ zIndex: 0 }} />
+          <BackArrow
+            style={{ zIndex: 100, opacity: 0 }}
+            onPress={handleGoHome}
+          />
+        </View>
 
-      <Animated.FlatList
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        ref={scrollRef}
-        automaticallyAdjustContentInsets
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}
-        onScroll={onScroll}
-        scrollEventThrottle={5}
-        data={flatListData}
-        renderItem={renderItem}
-        getItemLayout={getItemLayout}
-        decelerationRate="fast"
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={0.9}
-        removeClippedSubviews={false}
-        bounces={false}
-      />
-      <GradientFooter isHome={isHome} />
+        <Animated.FlatList
+          pagingEnabled
+          showsVerticalScrollIndicator={false}
+          ref={scrollRef}
+          automaticallyAdjustContentInsets
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}
+          onScroll={onScroll}
+          scrollEventThrottle={5}
+          data={flatListData}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          decelerationRate="fast"
+          keyExtractor={keyExtractor}
+          onEndReachedThreshold={0.9}
+          removeClippedSubviews={false}
+          bounces={false}
+        />
+        <GradientFooter isHome={isHome} />
+      </GradientBg>
     </View>
   );
 };

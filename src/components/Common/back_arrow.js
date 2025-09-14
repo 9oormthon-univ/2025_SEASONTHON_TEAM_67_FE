@@ -14,7 +14,7 @@ export default function BackArrow({ onPress, style, imgStyle }) {
       activeOpacity={0}
     >
       <Image
-        source={require('../assets/images/Common/arrow.png')}
+        source={require('../../assets/images/Common/arrow.png')}
         style={[styles.img, imgStyle]}
       />
     </TouchableOpacity>

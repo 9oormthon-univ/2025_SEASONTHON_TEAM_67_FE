@@ -1,14 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import colors from '../../styles/colors';
 
-const NewsComponent = ({
-  data,
-  fields = ['title', 'date', 'description'],
-  style,
-  titlestyle = 'white',
-  titleEllipsis = false, // 추가: 기본값 false
-}) => {
-  console.log('NewsComponent data:', data);
+const NewsComponent = ({ data, style, titleEllipsis = false }) => {
   if (data && data.isSuccess === false) {
     return (
       <View style={[s.container, style]}>
@@ -24,8 +18,8 @@ const NewsComponent = ({
   const titleSentences = splitSentences(data.title);
   const sentences = splitSentences(data.summary);
 
-  // 색상 결정
-  const color = titlestyle === 'white' ? '#fff' : '#111';
+  // 색상 결정 (항상 green600으로 고정)
+  const color = colors.green600;
 
   // 최대 2줄까지만 표시, 넘으면 ... 처리
   const renderWithEllipsis = (sentences, maxLines = 2) => {
@@ -37,38 +31,32 @@ const NewsComponent = ({
 
   return (
     <View style={[s.container, style]}>
-      {fields.includes('title') && (
-        <Text
-          style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8, color }}
-          numberOfLines={titleEllipsis ? 2 : undefined}
-          ellipsizeMode={titleEllipsis ? 'tail' : undefined}
-        >
-          {titleEllipsis
-            ? renderWithEllipsis(titleSentences, 2)
-            : titleSentences.join('\n')}
-        </Text>
-      )}
-      {fields.includes('date') && (
-        <Text
-          style={{
-            color,
-            fontWeight: 'bold',
-            opacity: 0.7,
-          }}
-        >
-          {data.originalPublishedAt}
-        </Text>
-      )}
-      {fields.includes('description') && (
-        <Text style={{ fontSize: 16, marginTop: 30, lineHeight: 28, color }}>
-          {sentences.map((sentence, idx) => (
-            <Text key={idx} style={{ color, fontSize: 16 }}>
-              {sentence}
-              {'\n\n'}
-            </Text>
-          ))}
-        </Text>
-      )}
+      <Text
+        style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8, color }}
+        numberOfLines={titleEllipsis ? 2 : undefined}
+        ellipsizeMode={titleEllipsis ? 'tail' : undefined}
+      >
+        {titleEllipsis
+          ? renderWithEllipsis(titleSentences, 2)
+          : titleSentences.join('\n')}
+      </Text>
+      <Text
+        style={{
+          color,
+          fontWeight: 'bold',
+          opacity: 0.7,
+        }}
+      >
+        {data.originalPublishedAt}
+      </Text>
+      <Text style={{ fontSize: 16, marginTop: 30, lineHeight: 28, color }}>
+        {sentences.map((sentence, idx) => (
+          <Text key={idx} style={{ color, fontSize: 16 }}>
+            {sentence}
+            {'\n\n'}
+          </Text>
+        ))}
+      </Text>
     </View>
   );
 };

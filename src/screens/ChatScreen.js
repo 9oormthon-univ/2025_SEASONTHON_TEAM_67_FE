@@ -12,7 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import NewsComponent from '../components/CardScreen/NewsComponent';
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
-import BackArrow from '../components/back_arrow';
+import BackArrow from '../components/Common/back_arrow';
+import GradientBg from '../components/Common/gradientBg';
 
 const GradientFooter = React.memo(() => (
   <LinearGradient
@@ -57,45 +58,22 @@ export default function ChatScreen({ navigation, route }) {
 
   return (
     <View style={s.flexContainer}>
-      <ImageBackground
-        source={require('../assets/images/Common/background.png')}
-        style={s.flexContainer}
-        resizeMode="cover"
-      >
-        {/* Linear gradient overlay */}
-        <View
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            zIndex: 1,
-          }}
-          pointerEvents="none"
-        >
-          <ImageBackground
-            source={null}
-            style={{ flex: 1 }}
-            imageStyle={{
-              width: '100%',
-              height: '100%',
-            }}
-          ></ImageBackground>
-        </View>
+      <GradientBg>
         <SafeAreaView
           style={{
             flex: 1,
-            padding: '20',
+            padding: 20,
             zIndex: 2,
           }}
         >
           <BackArrow onPress={() => navigation.goBack()} />
           <NewsComponent
             data={data}
-            fields={['title', 'date']}
             style={{
               paddingHorizontal: 10,
               paddingVertical: 40,
               maxHeight: 160,
             }}
-            titlestyle="white"
             titleEllipsis={true}
           />
           <ChatWrapper messages={messages} />
@@ -106,7 +84,7 @@ export default function ChatScreen({ navigation, route }) {
             recommendedQuestions={data.recommendedQuestions}
           />
         </SafeAreaView>
-      </ImageBackground>
+      </GradientBg>
     </View>
   );
 }
