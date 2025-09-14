@@ -1,3 +1,4 @@
+// src/screens/OnboardingScreen.js
 import React, { useMemo, useState } from 'react';
 import {
   View,
@@ -14,21 +15,16 @@ import ProgressBar from '../components/OnboardingScreen/ProgressBar';
 import ChoiceChips from '../components/OnboardingScreen/ChoiceChips';
 
 export default function OnboardingScreen({ navigation }) {
-  // 1~4 스텝
   const [step, setStep] = useState(1);
+  const [moreTopics, setMoreTopics] = useState([]);
+  const [lessTopics, setLessTopics] = useState([]);
+  const [tone, setTone] = useState(null);
 
-  // 선택 상태
-  const [moreTopics, setMoreTopics] = useState([]); // 자주 보고 싶은 주제
-  const [lessTopics, setLessTopics] = useState([]); // 적게 보고 싶은 주제
-  const [tone, setTone] = useState(null);           // 톤(문체)
-
-  // 전체 주제 (원하는 라벨로 바꿔 써도 됨)
   const ALL_TOPICS = [
     '정치사회', '경제', '국제', 'IT/과학',
     '문화', '스포츠', '환경', '교육',
   ];
 
-  // ❗요구사항: 1번 화면에서 고른 주제는 2번 화면에 안 보이게
   const step1Options = useMemo(
       () => ALL_TOPICS.filter(t => !lessTopics.includes(t)),
       [ALL_TOPICS, lessTopics],
@@ -65,11 +61,8 @@ export default function OnboardingScreen({ navigation }) {
       >
         <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
           <StatusBar barStyle="light-content" />
-
-          {/* 상단 프로그레스바 (흰색, 화면과 살짝 띄움) */}
           <ProgressBar progress={progress} />
 
-          {/* 가운데 내용 */}
           <ScrollView
               contentContainerStyle={styles.centerBlock}
               showsVerticalScrollIndicator={false}
@@ -82,7 +75,6 @@ export default function OnboardingScreen({ navigation }) {
                   <Text style={styles.desc}>
                     선택한 주제를 더 자주 보여드릴게요
                   </Text>
-
                   <ChoiceChips
                       options={step1Options}
                       selected={moreTopics}
@@ -100,7 +92,6 @@ export default function OnboardingScreen({ navigation }) {
                   <Text style={styles.desc}>
                     선택한 주제는 더 적게 보여드릴게요
                   </Text>
-
                   <ChoiceChips
                       options={step2Options}
                       selected={lessTopics}
@@ -116,8 +107,6 @@ export default function OnboardingScreen({ navigation }) {
                     어떤 문체로 뉴스를{'\n'}보여드릴까요?
                   </Text>
                   <Text style={styles.desc}>원하는 톤을 선택해주세요</Text>
-
-                  {/* 풀폭 톤 선택(라디오 느낌) */}
                   <View style={styles.toneWrap}>
                     {['사회', '정치사회', '경제'].map(label => {
                       const active = tone === label;
@@ -127,7 +116,7 @@ export default function OnboardingScreen({ navigation }) {
                               style={[
                                 styles.toneItem,
                                 {
-                                  backgroundColor: active ? '#D6F24A' : 'rgba(0,0,0,0.35)',
+                                  backgroundColor: active ? '#fff' : 'rgba(0,0,0,0.35)',
                                   borderColor: active ? 'transparent' : 'rgba(255,255,255,0.25)',
                                 },
                               ]}
@@ -145,36 +134,34 @@ export default function OnboardingScreen({ navigation }) {
 
             {step === 4 && (
                 <>
-                  <Text style={styles.title}>
-                    이제 뉴스를 보러 가볼까요?
-                  </Text>
+                  <Text style={styles.title}>이제 뉴스를 보러 가볼까요?</Text>
                   <Text style={styles.desc}>선호 설정이 완료되었어요</Text>
                 </>
             )}
           </ScrollView>
 
-          {/* 하단 네비게이션 버튼 */}
+          {/* 하단 버튼 */}
           <View style={styles.footer}>
-            <TouchableOpacity
-                onPress={goPrev}
-                style={styles.prevBtn}
-                disabled={step === 1}
-            >
-              <Text style={[styles.prevText, step === 1 && { opacity: 0.5 }]}>이전</Text>
-            </TouchableOpacity>
+            {step !== 1 && (
+                <TouchableOpacity
+                    onPress={goPrev}
+                    style={styles.prevBtn}
+                >
+                  <Text style={styles.prevText}>이전</Text>
+                </TouchableOpacity>
+            )}
 
             <TouchableOpacity
                 onPress={() => {
                   if (step < 4) return goNext();
-                  // 마지막: 시작하기 → CardScreen
                   navigation.replace('CardScreen');
                 }}
                 style={[
                   styles.nextBtn,
-                  step === 4 && { backgroundColor: '#fff' },
+                  step === 1 && { flex: 1, marginLeft: 0 }, // ✅ 첫화면: 전체 차지
                 ]}
             >
-              <Text style={[styles.nextText, step === 4 && { color: '#111' }]}>
+              <Text style={styles.nextText}>
                 {step === 4 ? '시작하기' : '다음'}
               </Text>
             </TouchableOpacity>
@@ -187,15 +174,12 @@ export default function OnboardingScreen({ navigation }) {
 const styles = StyleSheet.create({
   bg: { flex: 1 },
   safe: { flex: 1 },
-
-  // 중앙 영역(타이틀 + 설명 + 칩/선택)
   centerBlock: {
     flexGrow: 1,
     alignItems: 'center',
-    justifyContent: 'center', // 화면 정가운데
+    justifyContent: 'center',
     paddingBottom: 24,
   },
-
   title: {
     color: '#fff',
     fontSize: 24,
@@ -209,10 +193,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: 'center',
     marginTop: 4,
-    marginBottom: 26, // 요청: DESC 상하 마진 추가
+    marginBottom: 26,
   },
-
-  // 톤(문체) 전체폭 아이템
   toneWrap: {
     width: '86%',
     gap: 14,
@@ -229,8 +211,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-
-  // 하단 버튼
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -242,19 +222,17 @@ const styles = StyleSheet.create({
     height: 54,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.35)',
+    borderColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'transparent',
   },
   prevText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-
   nextBtn: {
     flex: 1,
     marginLeft: 16,
     height: 54,
     borderRadius: 22,
-    backgroundColor: '#D6F24A', // 라임(디자인 톤)
+    backgroundColor: '#fff', // ✅ 버튼 흰색
     justifyContent: 'center',
     alignItems: 'center',
   },
