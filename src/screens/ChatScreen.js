@@ -81,6 +81,12 @@ export default function ChatScreen({ navigation, route }) {
           </SafeAreaView>
         </GradientBg>
       ) : null}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: showAll ? 'transparent' : 'rgba(227, 227, 227, 0.2)',
+        }}
+      />
       <BackArrow onPress={() => navigation.goBack()} />
       <InputBar
         value={inputValue}

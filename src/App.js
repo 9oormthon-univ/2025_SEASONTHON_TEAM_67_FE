@@ -38,7 +38,6 @@ export default function App() {
             options={{
               presentation: 'transparentModal', // 이전 화면이 배경에 깔림
               animation: 'fade', //  애니메이션도 자연스럽게
-              cardStyle: { backgroundColor: 'rgba(28,26,47,0.95)' }, // (선택) 반투명 배경
             }}
           />
         </Stack.Navigator>
