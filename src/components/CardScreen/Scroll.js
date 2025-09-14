@@ -80,7 +80,6 @@ const Scroll = ({ data, scrollRef, navigation }) => {
   const [prevIsHome, setPrevIsHome] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
   const flatListData = useMemo(() => {
     if (!Array.isArray(data)) return [];
 
@@ -151,24 +150,24 @@ const Scroll = ({ data, scrollRef, navigation }) => {
 
   const renderItem = useCallback(
     ({ item }) => {
-      if (item.type === 'quiz') {
-        return (
-          <View style={{ flex: 1 }}>
-            <ContentComponent
-              data={item}
-              RenderComponent={QuizComponent}
-              navigation={navigation}
-              scrollRef={scrollRef}
-            />
-          </View>
-        );
-      }
       if (item.type === 'news') {
         return (
           <View style={{ flex: 1 }}>
             <ContentComponent
               data={item}
               RenderComponent={NewsComponent}
+              navigation={navigation}
+              scrollRef={scrollRef}
+            />
+          </View>
+        );
+      }
+      if (item.type === 'quiz') {
+        return (
+          <View style={{ flex: 1 }}>
+            <ContentComponent
+              data={item}
+              RenderComponent={QuizComponent}
               navigation={navigation}
               scrollRef={scrollRef}
             />

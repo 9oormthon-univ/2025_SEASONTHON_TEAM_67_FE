@@ -71,18 +71,20 @@ const NewsComponent = ({ data, style, titleEllipsis = false }) => {
       ) : null}
 
       {/* content */}
-      <View style={{ gap: 12 }}>
-        <View
-          style={[
-            s.stimulationBadge,
-            { backgroundColor: 'rgba(212, 212, 212, 0.4)' },
-          ]}
-        >
+      <View style={[{ gap: 12 }]}>
+        <View style={[s.stimulationBadge]}>
           <Image
             source={require('../../assets/images/CardScreen/AI_icon.png')}
             style={s.img}
           />
-          <Text style={{ color, fontSize: 12, fontWeight: 'bold', opacity: 1 }}>
+          <Text
+            style={{
+              color: colors.black000,
+              fontSize: 12,
+              fontWeight: 'bold',
+              opacity: 1,
+            }}
+          >
             자극도를 58% 낮췄어요
           </Text>
         </View>
@@ -160,7 +162,7 @@ export default NewsComponent;
 const s = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 30,
+    gap: 40,
   },
   tagNdate: {
     flexDirection: 'row',
@@ -168,11 +170,12 @@ const s = StyleSheet.create({
     gap: 8,
   },
   stimulationBadge: {
+    backgroundColor: colors.white000,
     alignSelf: 'flex-start',
     justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: 50,
     paddingHorizontal: 10,
     paddingVertical: 4,
     gap: 6,
@@ -181,7 +184,7 @@ const s = StyleSheet.create({
     width: 14,
     height: 14,
     resizeMode: 'contain',
-    tintColor: colors.white000,
+    // tintColor: colors.white000,
   },
   fullContentScroll: {
     flex: 1,

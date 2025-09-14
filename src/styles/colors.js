@@ -17,5 +17,5 @@ export default {
 
   // Primary
   green600: '#E1F738',
-  pink600: '#FFEBDC',
+  pink600: '#ECB489',
 };
