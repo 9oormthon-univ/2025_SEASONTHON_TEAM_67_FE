@@ -1,6 +1,12 @@
 // src/components/HomeScreen/Cardnews.js
 import React, { useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 
 export default function Cardnews({ data = [], onPressItem = () => {} }) {
   const renderItem = useCallback(
@@ -32,13 +38,13 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
         </View>
       </TouchableOpacity>
     ),
-    [onPressItem]
+    [onPressItem],
   );
 
   return (
     <FlatList
       data={data}
-      keyExtractor={(it) => String(it.id)}
+      keyExtractor={it => String(it.id)}
       renderItem={renderItem}
       horizontal
       showsHorizontalScrollIndicator={false}
@@ -58,7 +64,7 @@ const cs = StyleSheet.create({
     alignItems: 'flex-start',
   },
   cardWrap: {
-    width: 260,  // 고정 너비
+    width: 260, // 고정 너비
     height: 180, // 고정 높이
     alignSelf: 'flex-start',
   },

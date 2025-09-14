@@ -1,35 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Image,
-  ImageBackground,
   Text,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import NewsComponent from '../components/CardScreen/NewsComponent';
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
-
-const GradientFooter = React.memo(() => (
-  <LinearGradient
-    colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
-    start={{ x: 0.5, y: 0 }}
-    end={{ x: 0.5, y: 1 }}
-    style={styles.footer}
-    pointerEvents="none"
-  />
-));
+import BackArrow from '../components/Common/back_arrow';
+import GradientBg from '../components/Common/gradientBg';
+import colors from '../styles/colors';
+import { BlurView } from '@react-native-community/blur';
 
 export default function ChatScreen({ navigation, route }) {
-  const insets = useSafeAreaInsets();
   const { data } = route?.params ?? {};
   const [inputValue, setInputValue] = React.useState('');
-  const [messages, setMessages] = useState([
-    { sender: 'ai', text: '이 기사에 대해 더 알아보고 싶은 내용이 있나요?' },
-  ]);
+  const [messages, setMessages] = useState([]);
+  const [showAll, setShowAll] = useState(false);
+
+  // 아래에서 위로 올라오는 애니메이션 값
+  const slideAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (showAll) {
+      // showAll이 true가 되면 아래에서 위로 슬라이드 인
+      slideAnim.setValue(1);
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      // showAll이 false가 되면 다시 아래로 내려감
+      Animated.timing(slideAnim, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [showAll]);
+
+  // 화면 높이(필요시 Dimensions로 동적으로 구해도 됨)
+  const SCREEN_HEIGHT = 800;
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -56,79 +70,76 @@ export default function ChatScreen({ navigation, route }) {
 
   return (
     <View style={s.flexContainer}>
-      <ImageBackground
-        source={require('../assets/images/Common/background.png')}
-        style={s.flexContainer}
-        resizeMode="cover"
-      >
-        {/* Linear gradient overlay */}
-        <View
-          style={{
-            ...StyleSheet.absoluteFillObject,
-            zIndex: 1,
-          }}
-          pointerEvents="none"
-        >
-          <ImageBackground
-            source={null}
-            style={{ flex: 1 }}
-            imageStyle={{
-              width: '100%',
-              height: '100%',
-            }}
-          >
-            <View
-              style={{
-                ...StyleSheet.absoluteFillObject,
-                backgroundColor: 'transparent',
-              }}
-              pointerEvents="none"
-            >
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: 'rgba(30, 24, 78, 0.3)',
-                }}
-              />
-            </View>
-          </ImageBackground>
-        </View>
+      {showAll ? (
         <SafeAreaView
           style={{
             flex: 1,
-            padding: '20',
+            padding: 28,
+            paddingTop: 60,
             zIndex: 2,
           }}
         >
-          <TouchableOpacity
-            style={[s.btn, { top: insets.top }]}
-            onPress={() => navigation.goBack()}
-          >
-            <Image
-              source={require('../assets/images/Common/arrow.png')}
-              style={[s.img, { tintColor: 'white' }]}
-            />
-          </TouchableOpacity>
-          <NewsComponent
-            data={data}
-            fields={['title', 'date']}
+          <BlurView
+            blurType="dark"
+            blurAmount={1}
+            style={StyleSheet.absoluteFill}
+          />
+          <Text
             style={{
-              paddingHorizontal: 20,
-              paddingVertical: 30,
-              maxHeight: 150,
+              fontSize: 24,
+              fontWeight: 'bold',
+              color: colors.white000,
             }}
-            titlestyle="white"
-            titleEllipsis={true}
-          />
-          <ChatWrapper messages={messages} />
-          <InputBar
-            value={inputValue}
-            onChangeText={setInputValue}
-            onSend={handleSend}
-            recommendedQuestions={data.recommendedQuestions}
-          />
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {data.title}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              color: colors.gray300,
+              marginTop: 4,
+              marginBottom: 16,
+            }}
+          >
+            {data.originalPublishedAt}
+          </Text>
+          <Animated.View
+            style={{
+              flex: 1,
+              transform: [
+                {
+                  translateY: slideAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, SCREEN_HEIGHT], // 아래에서 위로
+                  }),
+                },
+              ],
+            }}
+          >
+            <ChatWrapper messages={messages} />
+          </Animated.View>
         </SafeAreaView>
-      </ImageBackground>
+      ) : (
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(240, 237, 237, 0.1)',
+          }}
+          onPress={() => navigation.goBack()}
+        />
+      )}
+
+      <BackArrow style={{ zIndex: 10 }} onPress={() => navigation.goBack()} />
+      <InputBar
+        value={inputValue}
+        onChangeText={setInputValue}
+        onSend={handleSend}
+        recommendedQuestions={data.recommendedQuestions}
+        setShowAll={setShowAll}
+        gradientTop={showAll ? 0 : -100}
+      />
     </View>
   );
 }
@@ -136,7 +147,7 @@ export default function ChatScreen({ navigation, route }) {
 const s = StyleSheet.create({
   flexContainer: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
   },
   footer: {
     position: 'absolute',

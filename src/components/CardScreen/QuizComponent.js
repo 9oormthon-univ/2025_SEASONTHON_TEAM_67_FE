@@ -5,7 +5,6 @@ import ToastAlert from './ToastAlert';
 
 const QuizComponent = ({ data, style }) => {
   const [toast, setToast] = useState(null);
-  const [selected, setSelected] = useState(null);
   const [disabled, setDisabled] = useState(false);
 
   if (!data.quiz) {
@@ -19,7 +18,6 @@ const QuizComponent = ({ data, style }) => {
   }
 
   const handleAnswer = answer => {
-    setSelected(answer);
     setDisabled(true);
     if (data.answer === answer) {
       setToast('정답이에요! 집중력이 대단해요 👏');
@@ -29,55 +27,45 @@ const QuizComponent = ({ data, style }) => {
     setTimeout(() => setToast(null), 1500);
   };
 
+  const answerButtons = [
+    {
+      label: '아니예요',
+      value: 'NO',
+      activeColor: colors.pink600,
+      isCorrect: answer => answer !== 'NO',
+    },
+    {
+      label: '맞아요',
+      value: 'YES',
+      activeColor: colors.green600,
+      isCorrect: answer => answer !== 'YES',
+    },
+  ];
+
   return (
     <View style={[s.container, style]}>
+      {/* 방사형 그라데이션 배경 */}
+
       <ToastAlert message={toast} />
-      <Text style={{ fontSize: 15, color: 'white' }}>🥳 깜짝퀴즈 !</Text>
+      <Text style={{ fontSize: 16, color: 'white' }}>🥳 깜짝퀴즈 !</Text>
       <Text style={s.quiz}>{data.quiz}</Text>
 
       <View style={s.btnwrap}>
-        <TouchableOpacity
-          style={[
-            s.btn,
-            disabled && data.quiz.answer !== 'NO'
-              ? { backgroundColor: '#fff' }
-              : { backgroundColor: colors.pink600 },
-          ]}
-          onPress={() => handleAnswer('NO')}
-          disabled={disabled}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 20,
-              color: disabled && data.answer !== 'NO' ? '#222' : '#111',
-            }}
+        {answerButtons.map(btn => (
+          <TouchableOpacity
+            key={btn.value}
+            style={[
+              s.btn,
+              disabled && btn.isCorrect(data.answer)
+                ? { backgroundColor: colors.gray500 }
+                : { backgroundColor: btn.activeColor },
+            ]}
+            onPress={() => handleAnswer(btn.value)}
+            disabled={disabled}
           >
-            아니예요
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            s.btn,
-            disabled && data.answer !== 'YES'
-              ? { backgroundColor: '#fff' }
-              : { backgroundColor: colors.green600 },
-          ]}
-          onPress={() => handleAnswer('YES')}
-          disabled={disabled}
-        >
-          <Text
-            style={{
-              textAlign: 'center',
-              fontWeight: 'bold',
-              fontSize: 20,
-              color: disabled && data.answer !== 'YES' ? '#222' : '#111',
-            }}
-          >
-            맞아요
-          </Text>
-        </TouchableOpacity>
+            <Text style={s.btntxt}>{btn.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </View>
   );
@@ -96,7 +84,7 @@ const s = StyleSheet.create({
   },
   quiz: {
     color: 'white',
-    width: '90%',
+    width: '95%',
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -107,21 +95,18 @@ const s = StyleSheet.create({
   btnwrap: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    gap: 10,
+    gap: 14,
   },
   btn: {
     textAlign: 'center',
     width: 120,
     padding: 12,
-    backgroundColor: 'rgba(225, 247, 56, 0.5)',
     borderRadius: 25,
-    fontSize: 18,
+  },
+  btntxt: {
+    textAlign: 'center',
     fontWeight: 'bold',
-    lineHeight: 18,
-    shadowColor: 'rgba(154, 108, 108, 0.25)',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 1,
-    shadowRadius: 20,
-    elevation: 8,
+    fontSize: 20,
+    color: '#222',
   },
 });
