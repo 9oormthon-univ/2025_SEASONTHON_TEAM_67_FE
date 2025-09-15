@@ -1,13 +1,20 @@
 // ChatWrapper.js
 
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import colors from '../../styles/colors';
 
 const AI_PROFILE = require('../../assets/images/Common/ChatGPT.png');
 const USER_PROFILE = require('../../assets/images/Common/Icon_gbnam.jpg');
 
-export default function ChatWrapper({ messages }) {
+export default function ChatWrapper({ messages, isLoading }) {
   return (
     <ScrollView
       style={styles.wrapper}
@@ -21,7 +28,10 @@ export default function ChatWrapper({ messages }) {
         >
           <Image
             source={msg.sender === 'user' ? USER_PROFILE : AI_PROFILE}
-            style={styles.profile}
+            style={[
+              styles.profile,
+              msg.sender !== 'user' && { tintColor: '#fff' }, // AI_PROFILE일 때만 흰색 tint
+            ]}
           />
           <View
             style={[
@@ -33,6 +43,24 @@ export default function ChatWrapper({ messages }) {
           </View>
         </View>
       ))}
+      {/* AI 응답 대기 중일 때 로딩 점세개 */}
+      {isLoading && (
+        <View style={[styles.row]}>
+          <Image
+            source={AI_PROFILE}
+            style={[styles.profile, { tintColor: '#fff' }]} // 로딩도 AI_PROFILE이므로 tintColor 적용
+          />
+          <View
+            style={[
+              styles.bubble,
+              styles.aiBubble,
+              { flexDirection: 'row', alignItems: 'center' },
+            ]}
+          >
+            <Text style={[styles.text, { fontSize: 22 }]}>···</Text>
+          </View>
+        </View>
+      )}
     </ScrollView>
   );
 }
@@ -54,7 +82,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#eee',
   },
   bubble: {
     maxWidth: '80%',

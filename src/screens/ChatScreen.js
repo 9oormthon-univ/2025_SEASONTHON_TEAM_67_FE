@@ -28,6 +28,7 @@ export default function ChatScreen({ navigation, route }) {
   const [recommendedQuestions, setRecommendedQuestions] = useState(
     data?.recommendedQuestions || [],
   );
+  const [isLoading, setIsLoading] = useState(false);
 
   // 채팅방 입장 API 호출
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function ChatScreen({ navigation, route }) {
     (async () => {
       try {
         const res = await apiFetch(
-          `/api/chats/rooms/enter?nwsId=${data.newsId}`,
+          `/api/chats/rooms/enter?newsId=${data.newsId}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -50,6 +51,7 @@ export default function ChatScreen({ navigation, route }) {
       } catch (err) {
         console.error('Error entering chat room:', err);
         setToast('채팅방 입장 중 오류가 발생했습니다.');
+        setTimeout(() => navigation.goBack(), 2000);
       }
     })();
     return () => {
@@ -59,25 +61,38 @@ export default function ChatScreen({ navigation, route }) {
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    // 사용자 메시지 추가
     setMessages(prev => [...prev, { sender: 'user', text: inputValue }]);
     setInputValue('');
+    setIsLoading(true);
 
-    // 백엔드 요청 예시 (실제 API로 변경)
-    // const response = await fetch(...);
-    // const data = await response.json();
-    // setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
-
-    // 데모: 1초 후 AI 응답
-    setTimeout(() => {
+    try {
+      const res = await apiFetch(`/api/chats/news/${data.newsId}/talk`, {
+        method: 'POST',
+        body: {
+          message: inputValue,
+          chatRoomId: roomId,
+        },
+      });
+      const aiReply = res?.result?.messages || 'AI 답변을 불러오지 못했습니다.';
       setMessages(prev => [
         ...prev,
         {
           sender: 'ai',
-          text: '귀멸의 칼날이 그렇게 빨리 흥행한 건 몇 가지 이유가 있어요. 먼저 애니메이션이랑 극장판이 연달아 대박이 나면서 원작 만화까지 사람들이 몰려봤고, 코로나 시기에 집에서 보는 문화랑 스트리밍 서비스가 잘 맞아떨어졌어요. 거기에다 화려한 그림체랑 몰입감 있는 스토리 덕분에 입소문이 엄청 퍼져서 기록적인 인기를 끌게 된 거예요.',
+          text: aiReply,
         },
       ]);
-    }, 2000);
+    } catch (err) {
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: 'AI 답변 중 오류가 발생했습니다.',
+        },
+      ]);
+      setToast('AI 답변 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -118,13 +133,13 @@ export default function ChatScreen({ navigation, route }) {
             {data.originalPublishedAt}
           </Text>
 
-          <ChatWrapper messages={messages} />
+          <ChatWrapper messages={messages} isLoading={isLoading} />
         </SafeAreaView>
       ) : (
         <TouchableOpacity
           style={{
             flex: 1,
-            backgroundColor: 'rgba(240, 237, 237, 0.1)',
+            backgroundColor: 'rgba(240, 240, 240, 0.1)',
           }}
           onPress={() => navigation.goBack()}
         />
