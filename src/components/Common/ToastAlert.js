@@ -7,7 +7,7 @@ const ToastAlert = ({
   visible = !!message,
   onClose,
   duration = 2000,
-  marginTop = 40, // 추가: 기본값 40
+  marginTop = 40,
 }) => {
   const [show, setShow] = useState(visible);
 

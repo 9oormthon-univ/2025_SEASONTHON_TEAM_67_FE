@@ -43,8 +43,6 @@ const QuizComponent = ({ data, style }) => {
 
   return (
     <View style={[s.container, style]}>
-      {/* 방사형 그라데이션 배경 */}
-
       <ToastAlert
         message={toast}
         onClose={() => setToast('')}
