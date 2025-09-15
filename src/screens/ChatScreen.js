@@ -156,7 +156,7 @@ export default function ChatScreen({ navigation, route }) {
         onSend={handleSend}
         recommendedQuestions={recommendedQuestions}
         setShowAll={setShowAll}
-        gradientTop={showAll ? 0 : -100}
+        gradientTop={showAll ? -40 : -100}
       />
     </View>
   );

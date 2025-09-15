@@ -43,7 +43,7 @@ export default function ChatWrapper({ messages, isLoading }) {
             source={msg.sender === 'user' ? USER_PROFILE : AI_PROFILE}
             style={[
               styles.profile,
-              msg.sender !== 'user' && { tintColor: '#fff' }, // AI_PROFILE일 때만 흰색 tint
+              msg.sender !== 'user' && { tintColor: '#fff' },
             ]}
           />
           <View
