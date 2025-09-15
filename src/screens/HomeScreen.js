@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Image,
   StatusBar,
-  ImageBackground,
   ActivityIndicator,
   StyleSheet as RNStyleSheet,
 } from 'react-native';
@@ -18,7 +17,7 @@ import {
 } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Cardnews from '../components/HomeScreen/Cardnews';
-import { apiFetch } from '../components/Common/apiClient'; // ✅ 중앙 API 래퍼 사용
+import { apiFetch } from '../components/Common/apiClient';
 import GradientBg from '../components/Common/gradientBg';
 
 export default function HomeScreen({ onPressCard }) {
@@ -46,7 +45,6 @@ export default function HomeScreen({ onPressCard }) {
         setLoading(true);
         setErrMsg('');
 
-        // ⛳️ 서버가 today는 POST를 기대한다면 이렇게 호출 (GET이면 method:'GET'로 바꿔도 됨)
         const { result } = await apiFetch('/api/news/today', { method: 'GET' });
 
         if (!alive) return;
@@ -72,7 +70,7 @@ export default function HomeScreen({ onPressCard }) {
         const msg = String(e?.message || '예기치 않은 오류');
         setErrMsg(msg);
 
-        // 토큰 없음/만료 추정 시 로그인으로 유도 (필요 없으면 제거)
+        // 토큰 없음/만료 추정 시 로그인으로 유도
         if (msg.includes('401') || msg.includes('Unauthorized')) {
           nav.replace('LoginScreen');
         }
@@ -88,12 +86,6 @@ export default function HomeScreen({ onPressCard }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
-      {/* 배경 전체 */}
-      {/* <ImageBackground
-        source={require('../assets/images/Common/background.png')}
-        style={RNStyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      /> */}
       <GradientBg overlayOpacity={50}>
         <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
           <StatusBar
@@ -155,8 +147,8 @@ export default function HomeScreen({ onPressCard }) {
                 <Cardnews
                   data={cards}
                   onPressItem={item => {
+                    console.log('[homescreen]item id:', item.id);
                     if (onPressCard) onPressCard(item.id);
-                    else nav.navigate('CardScreen', { itemId: item.id });
                   }}
                 />
               )}

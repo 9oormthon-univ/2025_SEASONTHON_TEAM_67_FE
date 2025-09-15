@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+//chatscreen.js
+
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,65 +9,91 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import colors from '../styles/colors';
+import { BlurView } from '@react-native-community/blur';
+import LinearGradient from 'react-native-linear-gradient';
+
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
 import BackArrow from '../components/Common/back_arrow';
-import GradientBg from '../components/Common/gradientBg';
-import colors from '../styles/colors';
-import { BlurView } from '@react-native-community/blur';
+import { apiFetch } from '../components/Common/apiClient';
+import ToastAlert from '../components/Common/ToastAlert';
 
 export default function ChatScreen({ navigation, route }) {
   const { data } = route?.params ?? {};
   const [inputValue, setInputValue] = React.useState('');
   const [messages, setMessages] = useState([]);
+  const [toast, setToast] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const [roomId, setRoomId] = useState(null);
+  const [recommendedQuestions, setRecommendedQuestions] = useState(
+    data?.recommendedQuestions || [],
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
-  // 아래에서 위로 올라오는 애니메이션 값
-  const slideAnim = useRef(new Animated.Value(1)).current;
-
+  // 채팅방 입장 API 호출
   useEffect(() => {
-    if (showAll) {
-      // showAll이 true가 되면 아래에서 위로 슬라이드 인
-      slideAnim.setValue(1);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      // showAll이 false가 되면 다시 아래로 내려감
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [showAll]);
-
-  // 화면 높이(필요시 Dimensions로 동적으로 구해도 됨)
-  const SCREEN_HEIGHT = 800;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await apiFetch(
+          `/api/chats/rooms/enter?newsId=${data.newsId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+        if (!alive) return;
+        if (res?.result?.chatRoomId) {
+          setRoomId(res.result.chatRoomId);
+          setRecommendedQuestions(res.result.recommendedQuestions || []);
+          console.log('Entered chat room:', res.result);
+        }
+      } catch (err) {
+        console.error('Error entering chat room:', err);
+        setToast('채팅방 입장 중 오류가 발생했습니다.');
+        setTimeout(() => navigation.goBack(), 2000);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [data?.newsId]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
-    // 사용자 메시지 추가
     setMessages(prev => [...prev, { sender: 'user', text: inputValue }]);
     setInputValue('');
+    setIsLoading(true);
 
-    // 백엔드 요청 예시 (실제 API로 변경)
-    // const response = await fetch(...);
-    // const data = await response.json();
-    // setMessages(prev => [...prev, { sender: 'ai', text: data.reply }]);
-
-    // 데모: 1초 후 AI 응답
-    setTimeout(() => {
+    try {
+      const res = await apiFetch(`/api/chats/news/${data.newsId}/talk`, {
+        method: 'POST',
+        body: {
+          message: inputValue,
+          chatRoomId: roomId,
+        },
+      });
+      const aiReply = res?.result?.messages || 'AI 답변을 불러오지 못했습니다.';
       setMessages(prev => [
         ...prev,
         {
           sender: 'ai',
-          text: '귀멸의 칼날이 그렇게 빨리 흥행한 건 몇 가지 이유가 있어요. 먼저 애니메이션이랑 극장판이 연달아 대박이 나면서 원작 만화까지 사람들이 몰려봤고, 코로나 시기에 집에서 보는 문화랑 스트리밍 서비스가 잘 맞아떨어졌어요. 거기에다 화려한 그림체랑 몰입감 있는 스토리 덕분에 입소문이 엄청 퍼져서 기록적인 인기를 끌게 된 거예요.',
+          text: aiReply,
         },
       ]);
-    }, 2000);
+    } catch (err) {
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: 'AI 답변 중 오류가 발생했습니다.',
+        },
+      ]);
+      setToast('AI 답변 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -74,16 +102,33 @@ export default function ChatScreen({ navigation, route }) {
         <SafeAreaView
           style={{
             flex: 1,
-            padding: 28,
+            padding: 32,
             paddingTop: 60,
             zIndex: 2,
           }}
         >
+          {/* 맨 위에 그라데이션 */}
+          <LinearGradient
+            colors={['#222222', 'rgba(0,0,0,0)']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 300,
+              zIndex: 0,
+            }}
+            pointerEvents="none"
+          />
+
           <BlurView
             blurType="dark"
             blurAmount={1}
             style={StyleSheet.absoluteFill}
           />
+
           <Text
             style={{
               fontSize: 24,
@@ -100,45 +145,36 @@ export default function ChatScreen({ navigation, route }) {
               fontSize: 14,
               color: colors.gray300,
               marginTop: 4,
-              marginBottom: 16,
             }}
           >
             {data.originalPublishedAt}
           </Text>
-          <Animated.View
-            style={{
-              flex: 1,
-              transform: [
-                {
-                  translateY: slideAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, SCREEN_HEIGHT], // 아래에서 위로
-                  }),
-                },
-              ],
-            }}
-          >
-            <ChatWrapper messages={messages} />
-          </Animated.View>
+
+          <View style={{ height: 10 }} />
+          <ChatWrapper messages={messages} isLoading={isLoading} />
         </SafeAreaView>
       ) : (
         <TouchableOpacity
           style={{
             flex: 1,
-            backgroundColor: 'rgba(240, 237, 237, 0.1)',
+            backgroundColor: 'rgba(139,128,208,0.05)',
           }}
           onPress={() => navigation.goBack()}
         />
       )}
-
+      <ToastAlert
+        message={toast}
+        onClose={() => setToast('')}
+        duration={2000}
+      />
       <BackArrow style={{ zIndex: 10 }} onPress={() => navigation.goBack()} />
       <InputBar
         value={inputValue}
         onChangeText={setInputValue}
         onSend={handleSend}
-        recommendedQuestions={data.recommendedQuestions}
+        recommendedQuestions={recommendedQuestions}
         setShowAll={setShowAll}
-        gradientTop={showAll ? 0 : -100}
+        gradientTop={showAll ? -40 : -200}
       />
     </View>
   );

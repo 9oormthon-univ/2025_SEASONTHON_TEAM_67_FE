@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import colors from '../../styles/colors';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import ToastAlert from './ToastAlert';
+import ToastAlert from '../Common/ToastAlert';
 
 const QuizComponent = ({ data, style }) => {
   const [toast, setToast] = useState(null);
@@ -24,7 +24,6 @@ const QuizComponent = ({ data, style }) => {
     } else {
       setToast('오답이에요🥲 다시 읽어 볼까요?');
     }
-    setTimeout(() => setToast(null), 1500);
   };
 
   const answerButtons = [
@@ -44,9 +43,11 @@ const QuizComponent = ({ data, style }) => {
 
   return (
     <View style={[s.container, style]}>
-      {/* 방사형 그라데이션 배경 */}
-
-      <ToastAlert message={toast} />
+      <ToastAlert
+        message={toast}
+        onClose={() => setToast('')}
+        duration={2000}
+      />
       <Text style={{ fontSize: 16, color: 'white' }}>🥳 깜짝퀴즈 !</Text>
       <Text style={s.quiz}>{data.quiz}</Text>
 
