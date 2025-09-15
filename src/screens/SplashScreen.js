@@ -32,8 +32,8 @@ export default function SplashScreen() {
 
         {/* 중앙 타이틀 */}
         <View style={s.center}>
-          <Text style={s.title}>OHNEW</Text>
-          <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+          <Text style={s.title}>OH!NEW</Text>
+          <Text style={s.subtitle}>더 쉽게 접하는 오늘의 뉴스</Text>
         </View>
       </SafeAreaView>
     </ImageBackground>

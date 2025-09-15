@@ -63,8 +63,8 @@ export default function LoginScreen({ navigation }) {
         >
           <View style={s.center}>
             {/* 브랜드 */}
-            <Text style={s.brandTitle}>OHNEW</Text>
-            <Text style={s.brandSub}>뉴스를 보는 새로운 방법</Text>
+            <Text style={s.brandTitle}>OH!NEW</Text>
+            <Text style={s.brandSub}>더 쉽게 접하는 오늘의 뉴스</Text>
 
             {/* 폼 */}
             <View style={s.formCard}>
