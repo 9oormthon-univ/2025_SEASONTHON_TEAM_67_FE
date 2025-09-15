@@ -1,3 +1,5 @@
+//chatscreen/inputbar.js
+
 import React from 'react';
 import {
   View,

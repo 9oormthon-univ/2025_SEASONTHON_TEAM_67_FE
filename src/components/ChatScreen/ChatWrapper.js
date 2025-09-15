@@ -1,3 +1,5 @@
+// ChatWrapper.js
+
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import colors from '../../styles/colors';

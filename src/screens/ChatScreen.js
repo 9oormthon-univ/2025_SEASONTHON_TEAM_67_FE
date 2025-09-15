@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+//chatscreen.js
+
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -7,43 +9,53 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import colors from '../styles/colors';
+import { BlurView } from '@react-native-community/blur';
+
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
 import BackArrow from '../components/Common/back_arrow';
-import GradientBg from '../components/Common/gradientBg';
-import colors from '../styles/colors';
-import { BlurView } from '@react-native-community/blur';
+import { apiFetch } from '../components/Common/apiClient';
+import ToastAlert from '../components/Common/ToastAlert';
 
 export default function ChatScreen({ navigation, route }) {
   const { data } = route?.params ?? {};
   const [inputValue, setInputValue] = React.useState('');
   const [messages, setMessages] = useState([]);
+  const [toast, setToast] = useState('');
   const [showAll, setShowAll] = useState(false);
+  const [roomId, setRoomId] = useState(null);
+  const [recommendedQuestions, setRecommendedQuestions] = useState(
+    data?.recommendedQuestions || [],
+  );
 
-  // 아래에서 위로 올라오는 애니메이션 값
-  const slideAnim = useRef(new Animated.Value(1)).current;
-
+  // 채팅방 입장 API 호출
   useEffect(() => {
-    if (showAll) {
-      // showAll이 true가 되면 아래에서 위로 슬라이드 인
-      slideAnim.setValue(1);
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      // showAll이 false가 되면 다시 아래로 내려감
-      Animated.timing(slideAnim, {
-        toValue: 1,
-        duration: 400,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [showAll]);
-
-  // 화면 높이(필요시 Dimensions로 동적으로 구해도 됨)
-  const SCREEN_HEIGHT = 800;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await apiFetch(
+          `/api/chats/rooms/enter?nwsId=${data.newsId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+        if (!alive) return;
+        if (res?.result?.chatRoomId) {
+          setRoomId(res.result.chatRoomId);
+          setRecommendedQuestions(res.result.recommendedQuestions || []);
+          console.log('Entered chat room:', res.result);
+        }
+      } catch (err) {
+        console.error('Error entering chat room:', err);
+        setToast('채팅방 입장 중 오류가 발생했습니다.');
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, [data?.newsId]);
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
@@ -105,21 +117,8 @@ export default function ChatScreen({ navigation, route }) {
           >
             {data.originalPublishedAt}
           </Text>
-          <Animated.View
-            style={{
-              flex: 1,
-              transform: [
-                {
-                  translateY: slideAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0, SCREEN_HEIGHT], // 아래에서 위로
-                  }),
-                },
-              ],
-            }}
-          >
-            <ChatWrapper messages={messages} />
-          </Animated.View>
+
+          <ChatWrapper messages={messages} />
         </SafeAreaView>
       ) : (
         <TouchableOpacity
@@ -130,13 +129,17 @@ export default function ChatScreen({ navigation, route }) {
           onPress={() => navigation.goBack()}
         />
       )}
-
+      <ToastAlert
+        message={toast}
+        onClose={() => setToast('')}
+        duration={2000}
+      />
       <BackArrow style={{ zIndex: 10 }} onPress={() => navigation.goBack()} />
       <InputBar
         value={inputValue}
         onChangeText={setInputValue}
         onSend={handleSend}
-        recommendedQuestions={data.recommendedQuestions}
+        recommendedQuestions={recommendedQuestions}
         setShowAll={setShowAll}
         gradientTop={showAll ? 0 : -100}
       />

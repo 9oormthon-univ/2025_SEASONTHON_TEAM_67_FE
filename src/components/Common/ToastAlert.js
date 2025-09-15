@@ -38,9 +38,13 @@ const ToastAlert = ({
 
 const s = StyleSheet.create({
   absoluteWrapper: {
-    flex: 1,
-    justifyContent: 'flex-start',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     alignItems: 'center',
+    backgroundColor: 'transparent',
+    zIndex: 9999,
   },
   toast: {
     backgroundColor: colors.white000,

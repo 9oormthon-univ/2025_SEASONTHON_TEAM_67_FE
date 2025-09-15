@@ -32,6 +32,7 @@ const FeedSideBar = ({ data }) => {
       }
     } catch (err) {
       setToast('북마크 처리 중 오류가 발생했습니다.');
+      console.error('toast', toast);
       console.error(err);
     }
   };
