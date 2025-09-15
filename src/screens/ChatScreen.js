@@ -139,7 +139,7 @@ export default function ChatScreen({ navigation, route }) {
         <TouchableOpacity
           style={{
             flex: 1,
-            backgroundColor: 'rgba(240, 240, 240, 0.1)',
+            backgroundColor: 'rgba(240, 240, 240, 0.05)',
           }}
           onPress={() => navigation.goBack()}
         />

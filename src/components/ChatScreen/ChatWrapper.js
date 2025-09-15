@@ -15,6 +15,19 @@ const AI_PROFILE = require('../../assets/images/Common/ChatGPT.png');
 const USER_PROFILE = require('../../assets/images/Common/Icon_gbnam.jpg');
 
 export default function ChatWrapper({ messages, isLoading }) {
+  const [dotCount, setDotCount] = useState(1);
+
+  React.useEffect(() => {
+    if (!isLoading) {
+      setDotCount(1);
+      return;
+    }
+    const interval = setInterval(() => {
+      setDotCount(prev => (prev < 3 ? prev + 1 : 1));
+    }, 400);
+    return () => clearInterval(interval);
+  }, [isLoading]);
+
   return (
     <ScrollView
       style={styles.wrapper}
@@ -43,12 +56,12 @@ export default function ChatWrapper({ messages, isLoading }) {
           </View>
         </View>
       ))}
-      {/* AI 응답 대기 중일 때 로딩 점세개 */}
+      {/* AI 응답 대기 중일 때 로딩 점 애니메이션 */}
       {isLoading && (
         <View style={[styles.row]}>
           <Image
             source={AI_PROFILE}
-            style={[styles.profile, { tintColor: '#fff' }]} // 로딩도 AI_PROFILE이므로 tintColor 적용
+            style={[styles.profile, { tintColor: '#fff' }]}
           />
           <View
             style={[
@@ -57,10 +70,13 @@ export default function ChatWrapper({ messages, isLoading }) {
               { flexDirection: 'row', alignItems: 'center' },
             ]}
           >
-            <Text style={[styles.text, { fontSize: 22 }]}>···</Text>
+            <Text style={[styles.text, { fontSize: 22 }]}>
+              {'.'.repeat(dotCount)}
+            </Text>
           </View>
         </View>
       )}
+      <View style={{ height: 80 }} />
     </ScrollView>
   );
 }
@@ -68,7 +84,6 @@ export default function ChatWrapper({ messages, isLoading }) {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    marginBottom: 80, // inputbar 공간 확보
   },
   row: {
     flexDirection: 'row',
