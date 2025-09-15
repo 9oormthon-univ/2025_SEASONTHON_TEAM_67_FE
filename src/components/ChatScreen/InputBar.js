@@ -60,9 +60,9 @@ export default function InputBar({
         pointerEvents="none"
       >
         <LinearGradient
-          colors={['rgba(0,0,0,0)', '#8B80D0']}
+          colors={['rgba(22,22,22,0)', '#8B80D0']}
           start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.5 }}
+          end={{ x: 0.5, y: 0.8 }}
           style={StyleSheet.absoluteFill}
         />
       </Animated.View>

@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../styles/colors';
 import { BlurView } from '@react-native-community/blur';
+import LinearGradient from 'react-native-linear-gradient';
 
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
@@ -101,16 +102,33 @@ export default function ChatScreen({ navigation, route }) {
         <SafeAreaView
           style={{
             flex: 1,
-            padding: 28,
+            padding: 32,
             paddingTop: 60,
             zIndex: 2,
           }}
         >
+          {/* 맨 위에 그라데이션 */}
+          <LinearGradient
+            colors={['#222222', 'rgba(0,0,0,0)']}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 300,
+              zIndex: 0,
+            }}
+            pointerEvents="none"
+          />
+
           <BlurView
             blurType="dark"
             blurAmount={1}
             style={StyleSheet.absoluteFill}
           />
+
           <Text
             style={{
               fontSize: 24,
@@ -127,19 +145,19 @@ export default function ChatScreen({ navigation, route }) {
               fontSize: 14,
               color: colors.gray300,
               marginTop: 4,
-              marginBottom: 16,
             }}
           >
             {data.originalPublishedAt}
           </Text>
 
+          <View style={{ height: 10 }} />
           <ChatWrapper messages={messages} isLoading={isLoading} />
         </SafeAreaView>
       ) : (
         <TouchableOpacity
           style={{
             flex: 1,
-            backgroundColor: 'rgba(240, 240, 240, 0.05)',
+            backgroundColor: 'rgba(139,128,208,0.05)',
           }}
           onPress={() => navigation.goBack()}
         />
@@ -156,7 +174,7 @@ export default function ChatScreen({ navigation, route }) {
         onSend={handleSend}
         recommendedQuestions={recommendedQuestions}
         setShowAll={setShowAll}
-        gradientTop={showAll ? -40 : -100}
+        gradientTop={showAll ? -40 : -200}
       />
     </View>
   );
