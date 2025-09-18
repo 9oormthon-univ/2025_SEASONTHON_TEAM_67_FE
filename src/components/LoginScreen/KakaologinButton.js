@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     bottom: 52,
     width: '90%',
     height: 64,
-    backgroundColor: '#FEE500',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
