@@ -53,14 +53,14 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
       ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
       snapToAlignment="start"
       decelerationRate="fast"
-      snapToInterval={260 + 50} // 카드 너비 + 간격
+      snapToInterval={260 + 12} // 카드 너비 + 간격
     />
   );
 }
 
 const cs = StyleSheet.create({
   listContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, // 화면 좌우 여백
     alignItems: 'flex-start',
   },
   cardWrap: {
@@ -79,7 +79,7 @@ const cs = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     gap: 8,
-    margin: 5,
+    // ✅ margin 제거
   },
   title: {
     fontSize: 15,

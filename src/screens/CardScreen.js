@@ -1,9 +1,9 @@
+// src/screens/CardScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Scroll from '../components/CardScreen/Scroll';
-import { apiFetch } from '../components/Common/apiClient';
-import GradientBg from '../components/Common/gradientBg'; // 추가
+import GradientBg from '../components/Common/gradientBg';
+import { apiFetchJson, clearTokens } from '../services/apiClient';
 
 export default function CardScreen({ navigation }) {
   const [data, setData] = useState(null);
@@ -13,17 +13,26 @@ export default function CardScreen({ navigation }) {
     let alive = true;
     (async () => {
       try {
-        const { result } = await apiFetch('/api/news/today', { method: 'GET' });
+        // ✅ 모든 API 호출에 JWT 자동 첨부 (apiFetchJson 사용)
+        const json = await apiFetchJson('/api/news/today', { method: 'GET' });
         if (!alive) return;
-        setData(result);
-      } catch (error) {
-        console.error(error);
+
+        const { result } = json || {};
+        setData(result ?? null);
+      } catch (e) {
+        const msg = String(e?.message || '');
+        console.error('[CardScreen] fetch error:', msg);
+
+        // ✅ 만료/미보유 시 토큰 제거 후 로그인으로
+        if (msg === 'Unauthorized' || msg.includes('401')) {
+          try { await clearTokens(); } catch {}
+          navigation.replace('LoginScreen');
+        }
       }
     })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+
+    return () => { alive = false; };
+  }, [navigation]);
 
   return (
     <View style={s.flexContainer}>

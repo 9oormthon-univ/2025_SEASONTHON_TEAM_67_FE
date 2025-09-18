@@ -1,4 +1,4 @@
-//chatscreen.js
+// src/screens/ChatScreen.js
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -6,7 +6,6 @@ import {
   View,
   TouchableOpacity,
   Text,
-  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import colors from '../styles/colors';
@@ -16,8 +15,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import InputBar from '../components/ChatScreen/InputBar';
 import ChatWrapper from '../components/ChatScreen/ChatWrapper';
 import BackArrow from '../components/Common/back_arrow';
-import { apiFetch } from '../components/Common/apiClient';
 import ToastAlert from '../components/Common/ToastAlert';
+
+// ✅ 공통 API 클라이언트로 통일
+import { apiFetchJson, clearTokens } from '../services/apiClient';
 
 export default function ChatScreen({ navigation, route }) {
   const { data } = route?.params ?? {};
@@ -31,66 +32,81 @@ export default function ChatScreen({ navigation, route }) {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  // 채팅방 입장 API 호출
+  // 채팅방 입장
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const res = await apiFetch(
+        const json = await apiFetchJson(
           `/api/chats/rooms/enter?newsId=${data.newsId}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-          },
+          { method: 'POST' } // Authorization 자동 첨부됨
         );
         if (!alive) return;
-        if (res?.result?.chatRoomId) {
-          setRoomId(res.result.chatRoomId);
-          setRecommendedQuestions(res.result.recommendedQuestions || []);
-          console.log('Entered chat room:', res.result);
+
+        if (json?.result?.chatRoomId) {
+          setRoomId(json.result.chatRoomId);
+          setRecommendedQuestions(json.result.recommendedQuestions || []);
+          console.log('Entered chat room:', json.result);
+        } else {
+          throw new Error('채팅방 정보를 가져오지 못했습니다.');
         }
       } catch (err) {
-        console.error('Error entering chat room:', err);
+        const msg = String(err?.message || '');
+        console.error('Error entering chat room:', msg);
+
+        // 만료/미보유 → 토큰 비움 후 로그인으로
+        if (msg === 'Unauthorized' || msg.includes('401')) {
+          try { await clearTokens(); } catch {}
+          navigation.replace('LoginScreen');
+          return;
+        }
+
         setToast('채팅방 입장 중 오류가 발생했습니다.');
-        setTimeout(() => navigation.goBack(), 2000);
+        setTimeout(() => navigation.goBack(), 1500);
       }
     })();
-    return () => {
-      alive = false;
-    };
-  }, [data?.newsId]);
+    return () => { alive = false; };
+  }, [data?.newsId, navigation]);
 
   const handleSend = async () => {
-    if (!inputValue.trim()) return;
-    setMessages(prev => [...prev, { sender: 'user', text: inputValue }]);
+    if (!inputValue.trim() || !roomId) return;
+
+    const userText = inputValue;
+    setMessages(prev => [...prev, { sender: 'user', text: userText }]);
     setInputValue('');
     setIsLoading(true);
 
     try {
-      const res = await apiFetch(`/api/chats/news/${data.newsId}/talk`, {
-        method: 'POST',
-        body: {
-          message: inputValue,
-          chatRoomId: roomId,
-        },
-      });
-      const aiReply = res?.result?.messages || 'AI 답변을 불러오지 못했습니다.';
+      const json = await apiFetchJson(
+        `/api/chats/news/${data.newsId}/talk`,
+        {
+          method: 'POST', // Authorization 자동 첨부됨
+          body: JSON.stringify({
+            message: userText,
+            chatRoomId: roomId,
+          }),
+        }
+      );
+
+      const aiReply = json?.result?.messages || 'AI 답변을 불러오지 못했습니다.';
       setMessages(prev => [
         ...prev,
-        {
-          sender: 'ai',
-          text: aiReply,
-        },
+        { sender: 'ai', text: aiReply },
       ]);
     } catch (err) {
-      setMessages(prev => [
-        ...prev,
-        {
-          sender: 'ai',
-          text: 'AI 답변 중 오류가 발생했습니다.',
-        },
-      ]);
-      setToast('AI 답변 중 오류가 발생했습니다.');
+      const msg = String(err?.message || '');
+      console.error('[ChatScreen] talk error:', msg);
+
+      if (msg === 'Unauthorized' || msg.includes('401')) {
+        try { await clearTokens(); } catch {}
+        navigation.replace('LoginScreen');
+      } else {
+        setMessages(prev => [
+          ...prev,
+          { sender: 'ai', text: 'AI 답변 중 오류가 발생했습니다.' },
+        ]);
+        setToast('AI 답변 중 오류가 발생했습니다.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -100,53 +116,23 @@ export default function ChatScreen({ navigation, route }) {
     <View style={s.flexContainer}>
       {showAll ? (
         <SafeAreaView
-          style={{
-            flex: 1,
-            padding: 32,
-            paddingTop: 60,
-            zIndex: 2,
-          }}
+          style={{ flex: 1, padding: 32, paddingTop: 60, zIndex: 2 }}
         >
           {/* 맨 위에 그라데이션 */}
           <LinearGradient
             colors={['#222222', 'rgba(0,0,0,0)']}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 300,
-              zIndex: 0,
-            }}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 300, zIndex: 0 }}
             pointerEvents="none"
           />
 
-          <BlurView
-            blurType="dark"
-            blurAmount={1}
-            style={StyleSheet.absoluteFill}
-          />
+          <BlurView blurType="dark" blurAmount={1} style={StyleSheet.absoluteFill} />
 
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              color: colors.white000,
-            }}
-            numberOfLines={2}
-            ellipsizeMode="tail"
-          >
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.white000 }} numberOfLines={2} ellipsizeMode="tail">
             {data.title}
           </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              color: colors.gray300,
-              marginTop: 4,
-            }}
-          >
+          <Text style={{ fontSize: 14, color: colors.gray300, marginTop: 4 }}>
             {data.originalPublishedAt}
           </Text>
 
@@ -155,19 +141,14 @@ export default function ChatScreen({ navigation, route }) {
         </SafeAreaView>
       ) : (
         <TouchableOpacity
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(139,128,208,0.05)',
-          }}
+          style={{ flex: 1, backgroundColor: 'rgba(139,128,208,0.05)' }}
           onPress={() => navigation.goBack()}
         />
       )}
-      <ToastAlert
-        message={toast}
-        onClose={() => setToast('')}
-        duration={2000}
-      />
+
+      <ToastAlert message={toast} onClose={() => setToast('')} duration={2000} />
       <BackArrow style={{ zIndex: 10 }} onPress={() => navigation.goBack()} />
+
       <InputBar
         value={inputValue}
         onChangeText={setInputValue}
@@ -184,25 +165,5 @@ const s = StyleSheet.create({
   flexContainer: {
     flex: 1,
     backgroundColor: 'transparent',
-  },
-  footer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 200,
-  },
-  btn: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    zIndex: 100,
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-  },
-  img: {
-    width: 24,
-    height: 24,
-    resizeMode: 'contain',
   },
 });

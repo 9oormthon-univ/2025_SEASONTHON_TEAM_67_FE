@@ -2,15 +2,39 @@
 import React from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Image,
-  ImageBackground, StatusBar, Linking,
+  ImageBackground, StatusBar, Linking, Alert,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { clearTokens } from '../services/apiClient'; // ✅ 추가
 
 export default function SettingScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const onPressEmail = () => Linking.openURL('mailto:team@ohnew.app');
   const onPressGit = () => Linking.openURL('https://github.com/9oormthon-univ/2025_SEASONTHON_TEAM_67_FE');
+
+  // ✅ 로그아웃 핸들러
+  const onPressLogout = () => {
+    Alert.alert('로그아웃', '정말 로그아웃 하시겠어요?', [
+      { text: '취소', style: 'cancel' },
+      {
+        text: '로그아웃',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await clearTokens(); // 로컬 토큰 삭제
+          } catch (e) {
+            // 무시 (토큰이 없어도 OK)
+          }
+          // 로그인 화면으로 스택 초기화 (뒤로가기 방지)
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'LoginScreen' }],
+          });
+        },
+      },
+    ]);
+  };
 
   return (
     <ImageBackground
@@ -49,9 +73,18 @@ export default function SettingScreen({ navigation }) {
 
           {/* 메뉴: 가운데 정렬 */}
           <View style={s.menu}>
-            <TouchableOpacity style={s.menuItem}><Text style={s.menuText}>계정관리</Text></TouchableOpacity>
-            <TouchableOpacity style={s.menuItem}><Text style={s.menuText}>로그아웃</Text></TouchableOpacity>
-            <TouchableOpacity style={s.menuItem}><Text style={s.menuText}>이용약관</Text></TouchableOpacity>
+            <TouchableOpacity style={s.menuItem}>
+              <Text style={s.menuText}>계정관리</Text>
+            </TouchableOpacity>
+
+            {/* ✅ 로그아웃 버튼 */}
+            <TouchableOpacity style={s.menuItem} onPress={onPressLogout}>
+              <Text style={s.menuText}>로그아웃</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={s.menuItem}>
+              <Text style={s.menuText}>이용약관</Text>
+            </TouchableOpacity>
           </View>
 
           {/* 하단 정보 */}

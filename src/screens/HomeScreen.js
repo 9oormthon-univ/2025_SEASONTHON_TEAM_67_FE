@@ -8,7 +8,6 @@ import {
   Image,
   StatusBar,
   ActivityIndicator,
-  StyleSheet as RNStyleSheet,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -17,8 +16,8 @@ import {
 } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Cardnews from '../components/HomeScreen/Cardnews';
-import { apiFetch } from '../components/Common/apiClient';
 import GradientBg from '../components/Common/gradientBg';
+import { apiFetchJson, clearTokens } from '../services/apiClient';
 
 export default function HomeScreen({ onPressCard }) {
   const nav = useNavigation();
@@ -39,23 +38,20 @@ export default function HomeScreen({ onPressCard }) {
   // ---- 데이터 로드 ----
   useEffect(() => {
     let alive = true;
-
     (async () => {
       try {
         setLoading(true);
         setErrMsg('');
 
-        const { result } = await apiFetch('/api/news/today', { method: 'GET' });
-
+        // ✅ 모든 API 호출은 apiFetchJson 사용(Authorization 자동 첨부)
+        const json = await apiFetchJson('/api/news/today', { method: 'GET' });
         if (!alive) return;
 
-        if (!Array.isArray(result)) {
-          throw new Error(
-            '서버 응답 형식이 올바르지 않습니다.(result 배열 아님)',
-          );
+        if (!Array.isArray(json.result)) {
+          throw new Error('서버 응답 형식이 올바르지 않습니다.(result 배열 아님)');
         }
 
-        const mapped = result.map(n => ({
+        const mapped = json.result.map(n => ({
           id: String(n.newsId),
           title: n.title ?? '',
           summary: n.summary ?? '',
@@ -70,8 +66,9 @@ export default function HomeScreen({ onPressCard }) {
         const msg = String(e?.message || '예기치 않은 오류');
         setErrMsg(msg);
 
-        // 토큰 없음/만료 추정 시 로그인으로 유도
-        if (msg.includes('401') || msg.includes('Unauthorized')) {
+        // ✅ 토큰 없음/만료 → 토큰 정리 후 로그인으로
+        if (msg === 'Unauthorized' || msg.includes('401')) {
+          try { await clearTokens(); } catch {}
           nav.replace('LoginScreen');
         }
       } finally {
@@ -79,20 +76,14 @@ export default function HomeScreen({ onPressCard }) {
       }
     })();
 
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, [nav]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#000' }}>
       <GradientBg overlayOpacity={50}>
         <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
-          <StatusBar
-            translucent
-            backgroundColor="transparent"
-            barStyle="light-content"
-          />
+          <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
           <View style={[s.body, newsStyle]}>
             {/* 상단 바: 왼쪽 로고 + 오른쪽 버튼 */}
@@ -147,7 +138,7 @@ export default function HomeScreen({ onPressCard }) {
                 <Cardnews
                   data={cards}
                   onPressItem={item => {
-                    console.log('[homescreen]item id:', item.id);
+                    console.log('[homescreen] item id:', item.id);
                     if (onPressCard) onPressCard(item.id);
                   }}
                 />
@@ -185,14 +176,8 @@ const s = StyleSheet.create({
     zIndex: 10,
     elevation: 10,
   },
-  logo: {
-    width: 120,
-    resizeMode: 'contain',
-  },
-  rightBtns: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  logo: { width: 120, resizeMode: 'contain' },
+  rightBtns: { flexDirection: 'row', alignItems: 'center' },
   topBtn: { padding: 4 },
   icon: { width: 28, height: 28, resizeMode: 'contain' },
 

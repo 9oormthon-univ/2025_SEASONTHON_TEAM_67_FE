@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Image,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { apiFetch } from '../../components/Common/apiClient';
+import { apiFetchJson, clearTokens } from '../../services/apiClient';
 import ToastAlert from '../Common/ToastAlert';
 
 const FeedSideBar = ({ data }) => {
@@ -23,17 +23,22 @@ const FeedSideBar = ({ data }) => {
     try {
       if (bookmarkActive) {
         // 이미 북마크 상태면 DELETE 요청
-        await apiFetch(`/api/news/${data.newsId}/scrap`, { method: 'DELETE' });
+        await apiFetchJson(`/api/news/${data.newsId}/scrap`, { method: 'DELETE' });
         setBookmarkActive(false);
       } else {
         // 북마크가 아니면 POST 요청
-        await apiFetch(`/api/news/${data.newsId}/scrap`, { method: 'POST' });
+        await apiFetchJson(`/api/news/${data.newsId}/scrap`, { method: 'POST' });
         setBookmarkActive(true);
       }
     } catch (err) {
+      const msg = String(err?.message || '');
+      if (msg === 'Unauthorized' || msg.includes('401')) {
+        try { await clearTokens(); } catch {}
+        navigation.replace('LoginScreen');
+        return;
+      }
       setToast('북마크 처리 중 오류가 발생했습니다.');
-      console.error('toast', toast);
-      console.error(err);
+      console.error('[FeedSideBar] bookmark error:', msg);
     }
   };
 
@@ -51,7 +56,7 @@ const FeedSideBar = ({ data }) => {
         />
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => navigation.navigate('ChatScreen', { data: data })}
+        onPress={() => navigation.navigate('ChatScreen', { data })}
         activeOpacity={0.8}
       >
         <Image
