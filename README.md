@@ -1,97 +1,154 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 2025_SEASONTHON_TEAM_67_FE
 
-# Getting Started
+## 프로젝트 소개
+2025_SEASONTHON_TEAM_67_FE는 React Native 기반의 SBS 뉴스 요약 및 AI 챗봇 기능을 제공하는 모바일 앱 프론트엔드 프로젝트입니다.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 폴더 구조
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+```
+src/
+├── App.js
+├── assets
+│   ├── dummydata.js
+│   ├── fonts
+│   │   ├── Pretendard-Black.ttf
+│   │   ├── Pretendard-Bold.ttf
+│   │   ├── Pretendard-ExtraBold.ttf
+│   │   ├── Pretendard-ExtraLight.ttf
+│   │   ├── Pretendard-Light.ttf
+│   │   ├── Pretendard-Medium.ttf
+│   │   ├── Pretendard-Regular.ttf
+│   │   ├── Pretendard-SemiBold.ttf
+│   │   └── Pretendard-Thin.ttf
+│   └── images
+│       ├── BookmarkScreen
+│       ├── CardScreen
+│       │   ├── AI_icon.png
+│       │   ├── bookmark.png
+│       │   ├── chat.png
+│       │   └── share.png
+│       ├── ChatScreen
+│       │   └── arrow_circle.png
+│       ├── Common
+│       │   ├── ChatGPT.png
+│       │   ├── Icon_gbnam.jpg
+│       │   ├── Icon_logo.png
+│       │   ├── arrow.png
+│       │   ├── background.png
+│       │   └── sbs_icon.png
+│       ├── HomeScreen
+│       │   ├── Icon_Arrow.png
+│       │   ├── Icon_Bookmark.png
+│       │   ├── Icon_Settings.png
+│       │   ├── Icon_gbnam.jpg
+│       │   └── background.png
+│       ├── LoginScreen
+│       │   └── icon_kakao.svg
+│       ├── OnboardingScreen
+│       │   └── background.png
+│       ├── SettingScreen
+│       │   ├── Icon_Email.png
+│       │   ├── Icon_Pencil.png
+│       │   └── Icon_git.png
+│       └── SplashScreen
+│           ├── background.png
+│           └── icon_kakao.svg
+├── components
+│   ├── BookmarkScreen
+│   │   └── Bookmark.js
+│   ├── CardScreen
+│   │   ├── ContentWrapper.js
+│   │   ├── FeedFooter.js
+│   │   ├── FeedSideBar.js
+│   │   ├── NewsComponent.js
+│   │   ├── QuizComponent.js
+│   │   └── Scroll.js
+│   ├── ChatScreen
+│   │   ├── ChatWrapper.js
+│   │   └── InputBar.js
+│   ├── Common
+│   │   ├── GradientFooter.js
+│   │   ├── ToastAlert.js
+│   │   ├── apiClient.js
+│   │   ├── back_arrow.js
+│   │   └── gradientBg.js
+│   ├── HomeScreen
+│   │   └── Cardnews.js
+│   ├── LoginScreen
+│   │   └── KakaologinButton.js
+│   ├── OnboardingScreen
+│   │   ├── ChoiceChips.js
+│   │   └── ProgressBar.js
+│   ├── SettingScreen
+│   └── SplashScreen
+│       └── KakaologinButton.js
+├── screens
+│   ├── BookmarkScreen.js
+│   ├── CardScreen.js
+│   ├── ChatScreen.js
+│   ├── HomeScreen.js
+│   ├── LoginScreen.js
+│   ├── OnboardingScreen.js
+│   ├── SettingScreen.js
+│   └── SplashScreen.js
+├── services
+│   ├── apiClient.js
+│   └── auth
+│       └── kakaoauth.js
+├── styles
+│   ├── colors.js
+│   ├── fonts.js
+│   └── textStyles.js
+└── utils
+    └── authStorage.js
 
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
+---
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## 주요 기능
 
-### Android
+- **뉴스 카드/퀴즈 카드 스크롤**: 최신 뉴스와 퀴즈를 카드 형태로 스크롤하며 탐색
+- **AI 챗봇**: 뉴스별로 AI와 대화하며 요약, 질의응답, 토론 가능
+- **북마크/스크랩**: 관심 뉴스 저장 및 관리
+- **카카오 로그인**: 카카오 계정으로 간편 로그인
+- **온보딩/스플래시**: 앱 첫 실행 시 온보딩 및 스플래시 화면 제공
 
-```sh
-# Using npm
-npm run android
+---
 
-# OR using Yarn
-yarn android
-```
+## 개발 환경
 
-### iOS
+- **React Native** 0.81.x
+- **React** 19.x
+- **react-navigation** 기반 화면 이동
+- **react-native-safe-area-context**로 iOS/Android 안전 영역 대응
+- **react-native-linear-gradient**, **react-native-community/blur** 등 UI 효과
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+---
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## 실행 방법
 
-```sh
-bundle install
-```
+1. **패키지 설치**
+   ```
+   npm install
+   ```
 
-Then, and every time you update your native dependencies, run:
+2. **앱 실행**
+   - Android:  
+     ```
+     npm run android
+     ```
+   - iOS:  
+     ```
+     npm run ios
+     ```
 
-```sh
-bundle exec pod install
-```
+---
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## 기타 참고
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.jsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- API 연동은 `src/services/apiClient.js` 및 `src/components/Common/apiClient.js`에서 관리
+- 폰트 및 이미지 리소스는 `src/assets/` 하위에 위치
+- 공통 컴포넌트는 `src/components/Common/`에서 관리
