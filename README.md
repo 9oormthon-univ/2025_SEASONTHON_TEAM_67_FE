@@ -45,13 +45,10 @@ src/
 │   │   └── Cardnews.js           // 홈화면의 카드뉴스 미리보기
 │   ├── LoginScreen
 │   │   └── KakaologinButton.js   // 카카오 로그인 버튼
-│   ├── OnboardingScreen
-│   │   ├── ChoiceChips.js        // 온보딩 질문 선택용 칩 UI
-│   │   └── ProgressBar.js        // 온보딩 단계 프로그래스바
-│   ├── SettingScreen             // (파일 없음, 향후 설정용 컴포넌트 예정?)
-│   └── SplashScreen
-│       └── KakaologinButton.js   // 스플래시용 로그인 버튼 (재사용)
-├── screens                       // 화면 단위 컴포넌트
+│   └── OnboardingScreen
+│       ├── ChoiceChips.js        // 온보딩 질문 선택용 칩 UI
+│       └── ProgressBar.js        // 온보딩 단계 프로그래스바
+├── screens
 │   ├── BookmarkScreen.js         // 북마크 뉴스 리스트 화면
 │   ├── CardScreen.js             // 뉴스 카드 상세 뷰 화면
 │   ├── ChatScreen.js             // GPT와의 채팅 화면
