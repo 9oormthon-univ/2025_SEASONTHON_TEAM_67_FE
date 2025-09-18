@@ -53,9 +53,7 @@ const Scroll = ({ data, scrollRef, navigation }) => {
       useNativeDriver: true,
       listener: event => {
         const offsetY = event.nativeEvent.contentOffset.y;
-        // FlatList의 높이로 현재 index 추정
         const idx = Math.round(offsetY / height);
-        // flatListData[idx]가 home인지 체크
         if (flatListData[idx]?.type === 'home') {
           setIsHome(true);
         } else {
@@ -80,7 +78,6 @@ const Scroll = ({ data, scrollRef, navigation }) => {
     [],
   );
 
-  // home 여부 추적
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }) => {
       if (viewableItems && viewableItems.length > 0) {
@@ -128,7 +125,6 @@ const Scroll = ({ data, scrollRef, navigation }) => {
           key={`home_${item.id}`}
           navigation={navigation}
           onPressCard={itemId => {
-            // flatListData에서 해당 id의 첫 번째 news/quiz index 찾기
             const idx = flatListData.findIndex(
               d => d.id === itemId && d.type == 'news',
             );
@@ -146,17 +142,16 @@ const Scroll = ({ data, scrollRef, navigation }) => {
     [navigation, scrollRef, flatListData, isHome, prevIsHome, handleGoHome],
   );
 
-  // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
       <GradientBg overlayOpacity={50}>
-        <View pointerEvents={isHome ? 'none' : 'auto'}>
-          <BackArrow style={{ zIndex: 0 }} />
+        {/* 🔥 수정한 부분: 보이는 BackArrow에 onPress 연결 */}
+        {!isHome && (
           <BackArrow
-            style={{ zIndex: 100, opacity: 0 }}
+            style={{ zIndex: 100 }}
             onPress={handleGoHome}
           />
-        </View>
+        )}
 
         <Animated.FlatList
           pagingEnabled

@@ -29,6 +29,29 @@ export default function OnboardingScreen({ navigation }) {
     '연예', '스포츠', '생활', '문화',
   ];
 
+  const TONE_OPTIONS = [
+    { label: '간결한 스타일', code: 'CONCISE' },
+    { label: '친근한 스타일', code: 'FRIENDLY' },
+    { label: '사실 중심적인 스타일', code: 'NEUTRAL' },
+  ];
+
+  const TOPIC_ICON = {
+    '정치': '🏛️',
+    '경제': '💹',
+    '사회': '🧑‍🤝‍🧑',
+    '국제': '🌍',
+    '연예': '🎬',
+    '스포츠': '🏅',
+    '생활': '🏠',
+    '문화': '🎨',
+  };
+  const toDisplay = (t) => `${TOPIC_ICON[t] || ''} ${t}`.trim();
+  const toBase = (label) => {
+    if (ALL_TOPICS.includes(label)) return label; // already base
+    const firstSpace = label.indexOf(' ');
+    return firstSpace > 0 ? label.slice(firstSpace + 1) : label;
+  };
+
   const step1Options = useMemo(
     () => ALL_TOPICS.filter(t => !lessTopics.includes(t)),
     [ALL_TOPICS, lessTopics],
@@ -39,18 +62,46 @@ export default function OnboardingScreen({ navigation }) {
     [ALL_TOPICS, moreTopics],
   );
 
+  const step1OptionsDisplay = useMemo(
+    () => step1Options.map(toDisplay),
+    [step1Options]
+  );
+  const step2OptionsDisplay = useMemo(
+    () => step2Options.map(toDisplay),
+    [step2Options]
+  );
+
   const currentStepForBar = step > 3 ? 3 : step;
 
-  const toggle = (selected, setter) => label => {
+  const toggle = (selected, setter, max = Infinity) => label => {
     if (selected.includes(label)) {
       setter(selected.filter(x => x !== label));
     } else {
+      if (selected.length >= max) return; // enforce max selections
       setter([...selected, label]);
+    }
+  };
+
+  const toggleTopic = (selectedBase, setter, max = Infinity) => (displayLabel) => {
+    const base = toBase(displayLabel);
+    if (selectedBase.includes(base)) {
+      setter(selectedBase.filter(x => x !== base));
+    } else {
+      if (selectedBase.length >= max) return;
+      setter([...selectedBase, base]);
     }
   };
 
   const goNext = () => setStep(prev => Math.min(prev + 1, 4));
   const goPrev = () => setStep(prev => Math.max(prev - 1, 1));
+
+  const canNext = useMemo(() => {
+    if (step === 1) return moreTopics.length > 0;      // at least 1
+    if (step === 2) return true;                       // optional
+    if (step === 3) return tone !== null;              // required
+    if (step === 4) return true;                       // submit screen
+    return false;
+  }, [step, moreTopics, tone]);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -97,13 +148,13 @@ export default function OnboardingScreen({ navigation }) {
             <>
               <View style={[styles.headerBlock, { position: 'absolute', top: '20%' }]}>
                 <Text style={styles.title}>자주 보고 싶은 주제를{'\n'}선택해주세요</Text>
-                <Text style={styles.desc}>선택한 주제를 더 자주 보여드릴게요</Text>
+                <Text style={styles.desc}>3개까지 고를 수 있어요</Text>
               </View>
               <View style={styles.chipsBlock}>
                 <ChoiceChips
-                  options={step1Options}
-                  selected={moreTopics}
-                  onToggle={toggle(moreTopics, setMoreTopics)}
+                  options={step1OptionsDisplay}
+                  selected={moreTopics.map(toDisplay)}
+                  onToggle={toggleTopic(moreTopics, setMoreTopics, 3)}
                   accent="#E1F738"
                 />
               </View>
@@ -114,13 +165,13 @@ export default function OnboardingScreen({ navigation }) {
             <>
               <View style={[styles.headerBlock, { position: 'absolute', top: '20%' }]}>
                 <Text style={styles.title}>적게 보고 싶은 주제를{'\n'}선택해주세요</Text>
-                <Text style={styles.desc}>선택한 주제는 더 적게 보여드릴게요</Text>
+                <Text style={styles.desc}>3개까지 고를 수 있어요</Text>
               </View>
               <View style={styles.chipsBlock}>
                 <ChoiceChips
-                  options={step2Options}
-                  selected={lessTopics}
-                  onToggle={toggle(lessTopics, setLessTopics)}
+                  options={step2OptionsDisplay}
+                  selected={lessTopics.map(toDisplay)}
+                  onToggle={toggleTopic(lessTopics, setLessTopics, 3)}
                   accent="#FFC891"
                 />
               </View>
@@ -131,16 +182,16 @@ export default function OnboardingScreen({ navigation }) {
             <>
               <View style={[styles.headerBlock, { position: 'absolute', top: '20%' }]}>
                 <Text style={styles.title}>어떤 문체로 뉴스를{'\n'}보여드릴까요?</Text>
-                <Text style={styles.desc}>원하는 톤을 선택해주세요</Text>
+                <Text style={styles.desc}>선택한 문체에 가깝게 자극도를 조절해요</Text>
               </View>
 
               <View style={styles.toneWrap}>
                 <View style={{ width: '86%', maxWidth: 360 }}>
-                  {['CONCISE', 'FRIENDLY', 'NEUTRAL'].map((label, idx) => {
-                    const active = tone === label;
+                  {TONE_OPTIONS.map((opt, idx) => {
+                    const active = tone === opt.code;
                     return (
                       <TouchableOpacity
-                        key={label}
+                        key={opt.code}
                         style={[
                           styles.toneItem,
                           idx > 0 && { marginTop: 12 },
@@ -149,10 +200,10 @@ export default function OnboardingScreen({ navigation }) {
                             borderColor: active ? 'transparent' : 'rgba(255,255,255,0.25)',
                           },
                         ]}
-                        onPress={() => setTone(label)}
+                        onPress={() => setTone(opt.code)}
                       >
                         <Text style={[styles.toneLabel, { color: active ? '#111' : '#fff' }]}>
-                          {label}
+                          {opt.label}
                         </Text>
                       </TouchableOpacity>
                     );
@@ -187,10 +238,11 @@ export default function OnboardingScreen({ navigation }) {
             style={[
               styles.nextBtn,
               (step === 1 || step === 4) && { flex: 1, marginLeft: 0, width: '100%' },
+              !canNext && styles.nextBtnDisabled,
             ]}
-            disabled={loading}
+            disabled={loading || !canNext}
           >
-            <Text style={styles.nextText}>{step === 4 ? '시작하기' : '다음'}</Text>
+            <Text style={[styles.nextText, !canNext && styles.nextTextDisabled]}>{step === 4 ? '시작하기' : '다음'}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -245,5 +297,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  nextBtnDisabled: {
+    backgroundColor: '#ccc',
+  },
   nextText: { color: '#111', fontSize: 18, fontWeight: '800' },
+  nextTextDisabled: {
+    color: '#888',
+  },
 });

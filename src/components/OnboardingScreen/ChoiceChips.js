@@ -24,7 +24,7 @@ export default function ChoiceChips({
                   onPress={() => onToggle(label)}
                   activeOpacity={0.8}
               >
-                <Text style={[s.label, { color: '#fff' }]}>{label}</Text>
+                <Text style={[s.label, { color: active ? '#000' : '#fff' }]}>{label}</Text>
               </TouchableOpacity>
           );
         })}

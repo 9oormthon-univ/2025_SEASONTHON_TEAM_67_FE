@@ -22,8 +22,8 @@ const NewsComponent = ({ data, style, titleEllipsis = false }) => {
   const sentences = splitSentences(data.summary);
 
   const tag = data.tags && data.tags.length > 0 ? `#${data.tags[0]}` : '';
-  const stimulationText = data.stimulationScore
-    ? `자극도를 ${data.stimulationScore}% 낮췄어요`
+  const stimulationText = data.epiStimulationReduced
+    ? `자극도를 ${data.epiStimulationReduced}% 낮췄어요`
     : null;
 
   // 본문 전체 텍스트
