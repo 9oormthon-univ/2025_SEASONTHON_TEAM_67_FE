@@ -1,89 +1,67 @@
-import React, {
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-} from 'react';
+import React, { useRef, useState, useCallback, useMemo } from 'react';
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import { StyleSheet, Animated, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
 import NewsComponent from './NewsComponent';
 import QuizComponent from './QuizComponent';
 import ContentComponent from './ContentWrapper';
 import HomeScreen from '../../screens/HomeScreen'; // 실제 경로에 맞게 수정
+import BackArrow from '../Common/back_arrow';
+import GradientBg from '../Common/gradientBg';
+import GradientFooter from '../Common/GradientFooter';
 
-const GradientFooter = ({ isHome }) => {
-  const animatedValue = useRef(new Animated.Value(isHome ? 1 : 0)).current;
-
-  useEffect(() => {
-    Animated.timing(animatedValue, {
-      toValue: isHome ? 1 : 0,
-      duration: 700,
-      useNativeDriver: false,
-    }).start();
-  }, [isHome, animatedValue]);
-
-  // 두 개의 Animated.View + LinearGradient를 겹치고 opacity로 cross-fade
-  const homeOpacity = animatedValue;
-  const normalOpacity = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
-
-  return (
-    <View style={s.footer}>
-      <Animated.View
-        style={[StyleSheet.absoluteFill, { opacity: normalOpacity }]}
-        pointerEvents="none"
-      >
-        <LinearGradient
-          colors={['rgba(0,0,0,0)', 'rgba(22,22,22,0.5)']}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-      </Animated.View>
-      <Animated.View
-        style={[StyleSheet.absoluteFill, { opacity: homeOpacity }]}
-        pointerEvents="none"
-      >
-        <LinearGradient
-          colors={['rgba(186,227,252,0.0)', 'rgba(135,206,250,0.2)']}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          pointerEvents="none"
-        />
-      </Animated.View>
-    </View>
-  );
-};
-
-const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
+const Scroll = ({ data, scrollRef, navigation }) => {
   const { height } = useSafeAreaFrame();
+  const [isHome, setIsHome] = useState(true);
+  const [prevIsHome, setPrevIsHome] = useState(true);
   const scrollY = useRef(new Animated.Value(0)).current;
-  const [scrollInfo, setScrollInfo] = useState({ isViewable: true, index: 0 });
-  const [isHome, setIsHome] = useState(true); // 현재 보여지는 아이템이 home인지 체크
-  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
-  const refFlatList = useRef(null);
 
-  const viewabilityConfig = useRef({ viewAreaCoveragePercentThreshold: 80 });
+  const flatListData = useMemo(() => {
+    if (!Array.isArray(data)) return [];
 
-  const onViewableItemsChanged = useCallback(
-    ({ changed }) => {
-      if (changed.length > 0) {
-        setScrollInfo({
-          isViewable: changed[0].isViewable,
-          index: changed[0].index,
+    const result = [
+      { type: 'home', id: 'home' }, // 첫 번째 아이템: HomeScreenComponent
+    ];
+
+    data.forEach(item => {
+      if (item) {
+        // news 아이템
+        const newsId = `${item.newsId ?? item.id}`;
+        result.push({
+          ...item,
+          type: 'news',
+          id: newsId,
         });
-        // home 여부 판단
-        setIsHome(flatListData[changed[0].index]?.type === 'home');
+        // quiz 아이템 (랜덤)
+        if (Math.random() < 0.5) {
+          const quizId = `quiz_${item.newsId ?? item.id}`;
+
+          result.push({
+            ...item,
+            type: 'quiz',
+            id: quizId,
+          });
+        }
       }
-    },
-    [flatListData],
+    });
+    return result;
+  }, [data]);
+
+  // 스크롤 위치에 따라 isScrolled 상태 변경
+  const onScroll = useCallback(
+    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+      useNativeDriver: true,
+      listener: event => {
+        const offsetY = event.nativeEvent.contentOffset.y;
+        const idx = Math.round(offsetY / height);
+        if (flatListData[idx]?.type === 'home') {
+          setIsHome(true);
+        } else {
+          setIsHome(false);
+        }
+      },
+    }),
+    [flatListData, height],
   );
 
   const getItemLayout = useCallback(
@@ -100,106 +78,107 @@ const Scroll = ({ data, onTypeChange, scrollRef, navigation }) => {
     [],
   );
 
-  // 스크롤 위치에 따라 isScrolled 상태 변경
-  const onScroll = useCallback(
-    Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-      useNativeDriver: true,
-      listener: event => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        setIsScrolled(offsetY > 10); // 10px 이상 스크롤 시 true
-      },
-    }),
-    [],
-  );
-  // scroll data 출력
-  console.log('Scroll data:', data);
-
-  // flatListData의 맨 앞에 HomeScreenComponent용 dummy 데이터 추가
-  const flatListData = useMemo(() => {
-    if (!Array.isArray(data)) return [];
-
-    const result = [
-      { type: 'home', id: 'home' }, // 첫 번째 아이템: HomeScreenComponent
-    ];
-
-    data.forEach(item => {
-      if (item) {
-        result.push({ ...item, type: 'news', id: item.id });
-        if (Math.random() < 0.5) {
-          result.push({ ...item, type: 'quiz', id: item.id });
-        }
+  const onViewableItemsChanged = useCallback(
+    ({ viewableItems }) => {
+      if (viewableItems && viewableItems.length > 0) {
+        setPrevIsHome(isHome);
+        setIsHome(viewableItems[0].item.type === 'home');
       }
-    });
-    return result;
-  }, [data]);
+    },
+    [isHome],
+  );
 
-  console.log('flatListData:', flatListData);
+  const handleGoHome = useCallback(() => {
+    if (scrollRef && scrollRef.current) {
+      scrollRef.current.scrollToIndex({ index: 0, animated: true });
+    }
+  }, [scrollRef]);
+
   const renderItem = useCallback(
     ({ item }) => {
-      if (item.type === 'home') {
+      if (item.type === 'news') {
         return (
-          <HomeScreen
-            key={`home_${item.id}`} // key 추가(필수는 아니지만 안전)
-            navigation={navigation}
-            onPressCard={itemId => {
-              const idx = flatListData.findIndex(
-                d => d.id === itemId && d.type !== 'home',
-              );
-              if (scrollRef && scrollRef.current && idx >= 0) {
-                scrollRef.current.scrollToIndex({ index: idx, animated: true });
-              }
-            }}
-          />
+          <View style={{ flex: 1 }}>
+            <ContentComponent
+              data={item}
+              RenderComponent={NewsComponent}
+              navigation={navigation}
+              scrollRef={scrollRef}
+            />
+          </View>
         );
       }
       if (item.type === 'quiz') {
         return (
-          <ContentComponent
-            data={item}
-            RenderComponent={QuizComponent}
-            navigation={navigation}
-            scrollRef={scrollRef}
-          />
+          <View style={{ flex: 1 }}>
+            <ContentComponent
+              data={item}
+              RenderComponent={QuizComponent}
+              navigation={navigation}
+              scrollRef={scrollRef}
+            />
+          </View>
         );
       }
       return (
-        <ContentComponent
-          data={item}
-          RenderComponent={NewsComponent}
+        <HomeScreen
+          key={`home_${item.id}`}
           navigation={navigation}
-          scrollRef={scrollRef}
+          onPressCard={itemId => {
+            const idx = flatListData.findIndex(
+              d => d.id === itemId && d.type == 'news',
+            );
+            console.log('Scroll: home card pressed, idx:', idx);
+            if (scrollRef && scrollRef.current && idx >= 0) {
+              scrollRef.current.scrollToIndex({
+                index: idx,
+                animated: true,
+              });
+            }
+          }}
         />
       );
     },
-    [navigation, scrollRef, flatListData],
+    [navigation, scrollRef, flatListData, isHome, prevIsHome, handleGoHome],
   );
 
-  // FlatList에 ref 연결
   return (
     <View style={{ flex: 1 }}>
-      <Animated.FlatList
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-        ref={scrollRef}
-        automaticallyAdjustContentInsets
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={viewabilityConfig.current}
-        onScroll={onScroll}
-        data={flatListData}
-        renderItem={renderItem}
-        getItemLayout={getItemLayout}
-        decelerationRate="fast"
-        keyExtractor={keyExtractor}
-        onEndReachedThreshold={0.9}
-        removeClippedSubviews={false}
-        bounces={false}
-      />
-      <GradientFooter isHome={!isScrolled} />
+      <GradientBg overlayOpacity={50}>
+        {/* 🔥 수정한 부분: 보이는 BackArrow에 onPress 연결 */}
+        {!isHome && (
+          <BackArrow
+            style={{ zIndex: 100 }}
+            onPress={handleGoHome}
+          />
+        )}
+
+        <Animated.FlatList
+          pagingEnabled
+          showsVerticalScrollIndicator={false}
+          ref={scrollRef}
+          automaticallyAdjustContentInsets
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={{ viewAreaCoveragePercentThreshold: 20 }}
+          onScroll={onScroll}
+          scrollEventThrottle={5}
+          data={flatListData}
+          renderItem={renderItem}
+          getItemLayout={getItemLayout}
+          decelerationRate="fast"
+          keyExtractor={keyExtractor}
+          onEndReachedThreshold={0.9}
+          removeClippedSubviews={false}
+          bounces={false}
+        />
+        <GradientFooter isHome={isHome} />
+      </GradientBg>
     </View>
   );
 };
 
 export default Scroll;
+
 const s = StyleSheet.create({
   flexContainer: { flex: 1, backgroundColor: 'black' },
   footer: {

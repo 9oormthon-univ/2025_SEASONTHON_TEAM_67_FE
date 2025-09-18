@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import SplashScreen from './screens/SplashScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
 import BookmarkScreen from './screens/BookmarkScreen';
@@ -23,6 +24,7 @@ export default function App() {
           screenOptions={{ headerShown: false }}
         >
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
+          <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="BookmarkScreen" component={BookmarkScreen} />
@@ -32,7 +34,14 @@ export default function App() {
             component={CardScreen}
             options={{ animation: 'slide_from_bottom' }} //이동 시 아래에서 위로 올라옴
           />
-          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen
+            name="ChatScreen"
+            component={ChatScreen}
+            options={{
+              presentation: 'transparentModal', // 이전 화면이 배경에 깔림
+              animation: 'fade', //  애니메이션도 자연스럽게
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

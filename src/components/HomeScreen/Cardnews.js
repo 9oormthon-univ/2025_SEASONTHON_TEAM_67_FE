@@ -1,6 +1,12 @@
 // src/components/HomeScreen/Cardnews.js
 import React, { useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 
 export default function Cardnews({ data = [], onPressItem = () => {} }) {
   const renderItem = useCallback(
@@ -32,13 +38,13 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
         </View>
       </TouchableOpacity>
     ),
-    [onPressItem]
+    [onPressItem],
   );
 
   return (
     <FlatList
       data={data}
-      keyExtractor={(it) => String(it.id)}
+      keyExtractor={it => String(it.id)}
       renderItem={renderItem}
       horizontal
       showsHorizontalScrollIndicator={false}
@@ -54,24 +60,26 @@ export default function Cardnews({ data = [], onPressItem = () => {} }) {
 
 const cs = StyleSheet.create({
   listContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 20, // 화면 좌우 여백
     alignItems: 'flex-start',
   },
   cardWrap: {
-    width: 260,  // 고정 너비
-    height: 180, // 고정 높이
+    width: 260, // 고정 너비
+    height: 204, // 고정 높이
     alignSelf: 'flex-start',
   },
   card: {
     flex: 1,
-    padding: 14,
-    borderRadius: 14,
+    padding: 18,
+    borderRadius: 20,
     backgroundColor: '#F9FAFB',
     shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 8,
     elevation: 2,
+    gap: 8,
+    // ✅ margin 제거
   },
   title: {
     fontSize: 15,
@@ -79,19 +87,17 @@ const cs = StyleSheet.create({
     color: '#111827',
   },
   summary: {
-    marginTop: 6,
     fontSize: 13,
     lineHeight: 18,
     color: '#4B5563',
   },
   footer: {
-    marginTop: 'auto',
     alignItems: 'flex-end',
   },
   chip: {
     backgroundColor: '#E1F738',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 12,
   },
   chipText: {

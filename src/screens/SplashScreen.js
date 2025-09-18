@@ -9,15 +9,26 @@ import {
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { getStoredAccessToken } from '../services/apiClient'; // ✅ 토큰 불러오기
 
 export default function SplashScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      navigation.replace('LoginScreen'); // ✅ 2초 뒤 로그인 화면으로 이동
-    }, 2000);
+    const checkAuth = async () => {
+      try {
+        const token = await getStoredAccessToken(); // ✅ 로컬 저장소에서 JWT 확인
+        if (token) {
+          navigation.replace('CardScreen'); // 토큰 있으면 뉴스화면으로
+        } else {
+          navigation.replace('LoginScreen'); // 없으면 로그인으로
+        }
+      } catch (e) {
+        navigation.replace('LoginScreen'); // 오류 시 로그인으로
+      }
+    };
 
+    const t = setTimeout(checkAuth, 1500); // 1.5초 후 실행
     return () => clearTimeout(t);
   }, [navigation]);
 
@@ -32,8 +43,8 @@ export default function SplashScreen() {
 
         {/* 중앙 타이틀 */}
         <View style={s.center}>
-          <Text style={s.title}>OHNEW</Text>
-          <Text style={s.subtitle}>뉴스를 보는 새로운 방법</Text>
+          <Text style={s.title}>OH!NEW</Text>
+          <Text style={s.subtitle}>더 쉽게 접하는 오늘의 뉴스</Text>
         </View>
       </SafeAreaView>
     </ImageBackground>

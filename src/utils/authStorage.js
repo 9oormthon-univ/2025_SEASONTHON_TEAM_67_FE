@@ -28,3 +28,7 @@ export async function getUserInfo() {
 export async function clearUserInfo() {
   await AsyncStorage.removeItem(USER_INFO_KEY);
 }
+
+export async function clearAllAuth() {
+  await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, USER_INFO_KEY]);
+}
