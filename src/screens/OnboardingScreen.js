@@ -30,9 +30,9 @@ export default function OnboardingScreen({ navigation }) {
   ];
 
   const TONE_OPTIONS = [
-    { label: '간결한 스타일', code: 'CONCISE' },
-    { label: '친근한 스타일', code: 'FRIENDLY' },
-    { label: '사실 중심적인 스타일', code: 'NEUTRAL' },
+    { label: '✂️ 간결한 스타일', code: 'CONCISE' },
+    { label: '🤗 친근한 스타일', code: 'FRIENDLY' },
+    { label: '📊 사실 중심적인 스타일', code: 'NEUTRAL' },
   ];
 
   const TOPIC_ICON = {

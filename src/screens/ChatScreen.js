@@ -6,8 +6,9 @@ import {
   View,
   TouchableOpacity,
   Text,
+  StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import colors from '../styles/colors';
 import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,6 +22,7 @@ import ToastAlert from '../components/Common/ToastAlert';
 import { apiFetchJson, clearTokens } from '../services/apiClient';
 
 export default function ChatScreen({ navigation, route }) {
+  const insets = useSafeAreaInsets();
   const { data } = route?.params ?? {};
   const [inputValue, setInputValue] = React.useState('');
   const [messages, setMessages] = useState([]);
@@ -116,8 +118,10 @@ export default function ChatScreen({ navigation, route }) {
     <View style={s.flexContainer}>
       {showAll ? (
         <SafeAreaView
-          style={{ flex: 1, padding: 32, paddingTop: 60, zIndex: 2 }}
+          style={{ flex: 1, padding: 32, paddingTop: insets.top + 16, zIndex: 2 }}
+          edges={['bottom']}
         >
+          <StatusBar barStyle="light-content" />
           {/* 맨 위에 그라데이션 */}
           <LinearGradient
             colors={['#222222', 'rgba(0,0,0,0)']}
@@ -128,8 +132,7 @@ export default function ChatScreen({ navigation, route }) {
           />
 
           <BlurView blurType="dark" blurAmount={1} style={StyleSheet.absoluteFill} />
-
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.white000 }} numberOfLines={2} ellipsizeMode="tail">
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: colors.white000, marginTop: 45 }} numberOfLines={2} ellipsizeMode="tail">
             {data.title}
           </Text>
           <Text style={{ fontSize: 14, color: colors.gray300, marginTop: 4 }}>

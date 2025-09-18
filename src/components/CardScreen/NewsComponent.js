@@ -23,7 +23,7 @@ const NewsComponent = ({ data, style, titleEllipsis = false }) => {
 
   const tag = data.tags && data.tags.length > 0 ? `#${data.tags[0]}` : '';
   const stimulationText = data.epiStimulationReduced
-    ? `자극도를 ${data.epiStimulationReduced}% 낮췄어요`
+    ? `${data.epiStimulationReduced}`
     : null;
 
   // 본문 전체 텍스트
@@ -72,22 +72,24 @@ const NewsComponent = ({ data, style, titleEllipsis = false }) => {
 
       {/* content */}
       <View style={[{ gap: 12 }]}>
-        <View style={[s.stimulationBadge]}>
-          <Image
-            source={require('../../assets/images/CardScreen/AI_icon.png')}
-            style={s.img}
-          />
-          <Text
-            style={{
-              color: colors.black000,
-              fontSize: 12,
-              fontWeight: 'bold',
-              opacity: 1,
-            }}
-          >
-            자극도를 58% 낮췄어요
-          </Text>
-        </View>
+        {stimulationText && (
+          <View style={[s.stimulationBadge]}>
+            <Image
+              source={require('../../assets/images/CardScreen/AI_icon.png')}
+              style={s.img}
+            />
+            <Text
+              style={{
+                color: colors.black000,
+                fontSize: 12,
+                fontWeight: 'bold',
+                opacity: 1,
+              }}
+            >
+              {stimulationText}
+            </Text>
+          </View>
+        )}
 
         {/* 본문 줄수 제한 + 더보기 */}
         {showAll ? (
