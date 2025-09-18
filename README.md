@@ -11,7 +11,6 @@
 src/
 ├── App.js                         // 앱 진입점, 네비게이션 및 전역 설정
 ├── assets                        // 정적 자원 모음
-│   ├── dummydata.js              // 임시 뉴스/테스트용 데이터
 │   ├── fonts                     // Pretendard 폰트 파일 모음
 │   └── images                    // 화면별 이미지 자원들
 │       ├── BookmarkScreen        // 북마크 화면 관련 이미지
